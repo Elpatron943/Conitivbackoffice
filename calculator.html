@@ -32,9 +32,19 @@
 
         <!-- Sélecteurs -->
         <div class="calculator-filters">
+          <div class="filter-group filter-group--client filter-group--entreprise">
+            <label for="clientEntreprise">Entreprise</label>
+            <input type="text" id="clientEntreprise" placeholder="Rechercher dans le CRM..." class="input-client" list="entrepriseList" autocomplete="off">
+            <datalist id="entrepriseList"></datalist>
+            <div id="entrepriseSuggestions" class="entreprise-suggestions" aria-hidden="true"></div>
+          </div>
           <div class="filter-group filter-group--client">
-            <label for="clientName">Nom du client</label>
-            <input type="text" id="clientName" placeholder="Ex. : Acme Corp" class="input-client">
+            <label for="clientPrenom">Prénom</label>
+            <input type="text" id="clientPrenom" placeholder="Ex. : Jean" class="input-client">
+          </div>
+          <div class="filter-group filter-group--client">
+            <label for="clientNom">Nom</label>
+            <input type="text" id="clientNom" placeholder="Ex. : Dupont" class="input-client">
           </div>
           <div class="filter-group">
             <label for="sector">Secteur</label>
@@ -51,7 +61,8 @@
             <label for="size">Taille d'entreprise</label>
             <select id="size">
               <option value="pme">PME (10–250)</option>
-              <option value="eti">ETI (250–5000)</option>
+              <option value="eti_inf">ETI (250–1000)</option>
+              <option value="eti_sup">ETI (1000–5000)</option>
               <option value="grand">Grande entreprise (>5000)</option>
             </select>
           </div>
@@ -68,6 +79,10 @@
 
         <!-- === ONGLET CYBER === -->
         <div class="tab-panel tab-panel--active" id="panel-cyber">
+          <!-- Groupe 1 : Contexte client -->
+          <div class="calc-group calc-group--contexte">
+            <h2 class="calc-group-title">1. Contexte client</h2>
+            <p class="calc-group-desc">Probabilité d'incident et impacts opérationnels selon votre secteur et taille.</p>
           <div class="results-section">
             <h2>Probabilité d'incident cyber via tiers</h2>
             <p class="personnalisation-intro">Saisissez un chiffre précis selon votre estimation (référence marché en repère).</p>
@@ -106,6 +121,22 @@
           <div class="results-section">
             <h2>Impacts opérationnels (si incident)</h2>
             <p class="personnalisation-intro">Saisissez un montant précis en k€ (référence marché en repère).</p>
+            <div class="impacts-crisehelp">
+              <p class="impacts-crisehelp-title">Coût moyen d'une cyberattaque réussie (ANSSI, Cour des comptes 2025)</p>
+              <p class="impacts-crisehelp-chiffres"><strong>466 k€</strong> (PME/TPE) · <strong>13 M€</strong> (ETI) · <strong>135 M€</strong> (grande entreprise)</p>
+              <p class="impacts-crisehelp-repartition"><strong>Répartition du coût :</strong> 50 % pertes d'exploitation (arrêt production, perte de CA) · 20 % prestations externes (experts cyber, avocats, communicateurs de crise) · 20 % remise en état et investissement post-crise SI · 10 % coût réputationnel (perte de clients, dégradation image de marque)</p>
+              <p class="impacts-crisehelp-split"><strong>Impact direct</strong> ≈ 40 % (prestations externes + remise en état) · <strong>Impact indirect</strong> ≈ 60 % (pertes d'exploitation + coût réputationnel)</p>
+              <a href="https://crisehelp.fr/cout-reel-cyberattaque-entreprise-france/" target="_blank" rel="noopener" class="impacts-crisehelp-link">Source : CriseHelp</a>
+            </div>
+            <div class="impacts-faillite">
+              <p class="impacts-faillite-title">Risque de défaillance après une cyberattaque</p>
+              <p class="impacts-faillite-chiffres"><strong>Chiffres souvent cités (sources contestées) :</strong> 60 % des PME fermeraient dans les 6 mois, 50–60 % dans les 18 mois — la NCSA et l’ENISA ont pris leurs distances avec ces statistiques.</p>
+              <p class="impacts-faillite-besse"><strong>Étude Bessé/G.P. Goldstein (48 incidents, France 2017–2021) :</strong> le risque de défaillance augmente d’environ <strong>50 % dans les 6 mois</strong> qui suivent l’annonce de l’incident. Le facteur moteur : crise de réputation et de confiance.</p>
+              <p class="impacts-faillite-links">
+                <a href="https://www.lemagit.fr/conseil/Combien-de-PME-mettent-la-cle-sous-la-porte-apres-une-cyberattaque" target="_blank" rel="noopener">LeMagIT</a> ·
+                <a href="https://cybersecurityventures.com/60-percent-of-small-companies-close-within-6-months-of-being-hacked/" target="_blank" rel="noopener">Cybersecurity Ventures</a>
+              </p>
+            </div>
             <div class="results-grid results-grid--3">
               <div class="result-card result-card--editable">
                 <span class="result-label">Impact direct</span>
@@ -138,46 +169,15 @@
               </div>
             </details>
           </div>
-          <div class="results-section results-section--highlight">
-            <h2>Risque financier annuel (cyber + NIS2)</h2>
-            <div class="result-big" id="risqueFinancier">—</div>
-            <p class="formule-note" id="risqueCyberBreakdown">Risque cyber = Probabilité incident via tiers × Impact total moyen. + Exposition NIS2 (si applicable).</p>
-            <div class="card-refs" id="refsRisque"></div>
           </div>
-          <div class="results-section results-section--roi">
-            <h2>ROI d'une solution de scoring</h2>
-            <p class="scoring-intro">Une solution de scoring ne supprime pas le risque fournisseur. Elle permet de <strong>réduire une part mesurable</strong> de l'exposition (gouvernance, priorisation, traçabilité). Le ROI ci-dessous repose sur une réduction réaliste du risque, par type.</p>
-            <p class="personnalisation-intro">Part pondérée qu'une solution de scoring cyber peut avoir sur les impacts possibles (réf. marché : 20–40 %, sources : Verizon DBIR, ENISA, Marsh).</p>
-            <div class="reduction-params">
-              <label for="inputRatioCyber">Part pondérée utilisée</label>
-              <input type="number" id="inputRatioCyber" min="20" max="40" step="1" value="40"> %
-            </div>
-            <p class="formule-note formule-note--reduction">Exposition réductible = (Risque cyber × part pondérée) + (Exposition NIS2 × 75 %). Ce montant est comparé à l'investissement pour le ROI.</p>
-            <div class="roi-grid">
-              <div class="result-card result-card--editable">
-                <span class="result-label">Investissement annuel solution (k€)</span>
-                <div class="result-inputs">
-                  <input type="number" id="inputInvestissement" min="0" step="1" placeholder="k€"> k€
-                </div>
-              </div>
-              <div class="result-card result-card--highlight result-card--calculated">
-                <span class="result-label">Exposition réductible grâce au scoring</span>
-                <span class="result-value" id="risqueEviteCyber">—</span>
-              </div>
-              <div class="result-card result-card--highlight result-card--calculated result-card--full">
-                <span class="result-label">ROI</span>
-                <span class="result-ref">(Exposition réductible − Investissement) / Investissement</span>
-                <span class="result-value result-big" id="roiValue">—</span>
-                <span class="roi-economie" id="roiEconomie"></span>
-              </div>
-            </div>
-            <p class="formule-note">Un ROI positif indique que l'exposition réductible dépasse le coût de la solution. Pour 1 € investi, le montant affiché correspond à l'exposition évitée grâce au scoring.</p>
-            <div class="card-refs" id="refsRoi"></div>
-          </div>
+
+          <!-- Groupe 2 : Risque amendes NIS -->
+          <div class="calc-group calc-group--nis2">
+            <h2 class="calc-group-title">2. Risque amendes NIS2</h2>
+            <p class="calc-group-desc">Exposition financière en cas d'amende réglementaire.</p>
           <details class="results-section nis2-section" open>
-            <summary>Amendes NIS2 et probabilité de sanction</summary>
+            <summary>Calcul personnalisé de l'exposition NIS2</summary>
             <div class="nis2-content">
-              <h3>Calcul personnalisé de l'exposition NIS2</h3>
               <p class="nis2-intro">Personnalisez les paramètres pour estimer l'exposition financière en cas d'amende.</p>
               <div class="nis2-calc-grid">
                 <div class="filter-group">
@@ -185,33 +185,87 @@
                   <select id="nis2EntityType">
                     <option value="essentielle">Entité essentielle (10 M€ ou 2 % CA)</option>
                     <option value="importante">Entité importante (7 M€ ou 1,4 % CA)</option>
+                    <option value="non_concerne">Non concerné</option>
                   </select>
                 </div>
                 <div class="filter-group">
                   <label for="nis2Ca">Chiffre d'affaires mondial annuel (M€)</label>
-                  <input type="number" id="nis2Ca" min="0" step="10" placeholder="Ex. : 600">
+                  <input type="text" id="nis2Ca" inputmode="decimal" placeholder="Ex. : 600">
                 </div>
-                <div class="filter-group">
-                  <label for="nis2Situation">Situation (probabilité d'amende)</label>
-                  <select id="nis2Situation">
-                    <option value="sans">Sans incident (&lt; 1 %)</option>
-                    <option value="incident">Incident significatif (20–40 %)</option>
-                    <option value="nonconformite">Incident + non-conformité (50–70 %)</option>
-                  </select>
+                <div class="filter-group filter-group--full">
+                  <label>Facteurs de probabilité d'être contrôlé et amendé</label>
+                  <p class="nis2-facteurs-intro">Cochez les facteurs qui s'appliquent à votre entreprise. La probabilité est calculée à partir des facteurs cochés.</p>
+                  <table class="hypotheses-table nis2-facteurs-table">
+                    <thead>
+                      <tr>
+                        <th>Facteur</th>
+                        <th>Impact</th>
+                        <th>Pondération</th>
+                        <th>Applique</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Incident cyber déclaré ou médiatisé</td>
+                        <td><span class="impact-badge impact-tres-fort">Très fort</span></td>
+                        <td>+20 %</td>
+                        <td><input type="checkbox" id="nis2FacteurIncident" class="nis2-facteur-cb"></td>
+                      </tr>
+                      <tr>
+                        <td>Notification NIS2 tardive ou incomplète</td>
+                        <td><span class="impact-badge impact-tres-fort">Très fort</span></td>
+                        <td>+20 %</td>
+                        <td><input type="checkbox" id="nis2FacteurNotification" class="nis2-facteur-cb"></td>
+                      </tr>
+                      <tr>
+                        <td>Secteur critique (énergie, santé, finance, transport, numérique)</td>
+                        <td><span class="impact-badge impact-fort">Fort</span></td>
+                        <td>+8 %</td>
+                        <td><input type="checkbox" id="nis2FacteurSecteur" class="nis2-facteur-cb"></td>
+                      </tr>
+                      <tr>
+                        <td>Dépendance à des tiers critiques</td>
+                        <td><span class="impact-badge impact-fort">Fort</span></td>
+                        <td>+8 %</td>
+                        <td><input type="checkbox" id="nis2FacteurTiers" class="nis2-facteur-cb"></td>
+                      </tr>
+                      <tr>
+                        <td>Signalement client / fournisseur / assureur</td>
+                        <td><span class="impact-badge impact-fort">Fort</span></td>
+                        <td>+8 %</td>
+                        <td><input type="checkbox" id="nis2FacteurSignalement" class="nis2-facteur-cb"></td>
+                      </tr>
+                      <tr>
+                        <td>Audit antérieur négatif</td>
+                        <td><span class="impact-badge impact-moyen">Moyen</span></td>
+                        <td>+4 %</td>
+                        <td><input type="checkbox" id="nis2FacteurAudit" class="nis2-facteur-cb"></td>
+                      </tr>
+                      <tr>
+                        <td>Taille ETI / grande entreprise</td>
+                        <td><span class="impact-badge impact-moyen">Moyen</span></td>
+                        <td>+4 %</td>
+                        <td><input type="checkbox" id="nis2FacteurTaille" class="nis2-facteur-cb"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p class="nis2-facteurs-note">Base : 0,5 %. Probabilité plafonnée à 70 %. Les pondérations sont des ordres de grandeur.</p>
                 </div>
               </div>
+              <p class="nis2-intro nis2-intro--compact">La probabilité est la chance d'être contrôlé et d'avoir une amende. Si amendé, le montant peut aller jusqu'au plafond. Pour le ROI, on retient l'amende max (approche conservatrice).</p>
               <div class="nis2-results">
                 <div class="result-card result-card--highlight">
                   <span class="result-label">Amende max potentielle NIS2</span>
+                  <span class="result-ref">Montant plafond si vous êtes amendé</span>
                   <span class="result-value result-big" id="nis2AmendeMax">—</span>
                 </div>
                 <div class="result-card result-card--highlight">
-                  <span class="result-label">Probabilité utilisée</span>
+                  <span class="result-label">Probabilité d'être contrôlé et amendé</span>
                   <span class="result-value" id="nis2Proba">—</span>
                 </div>
                 <div class="result-card result-card--highlight result-card--calculated">
-                  <span class="result-label">Exposition NIS2 (espérance)</span>
-                  <span class="result-ref">Amende max × Probabilité</span>
+                  <span class="result-label">Exposition NIS2 (pour le ROI)</span>
+                  <span class="result-ref">Amende max retenue (approche conservatrice)</span>
                   <span class="result-value result-big" id="nis2Exposition">—</span>
                 </div>
               </div>
@@ -224,17 +278,18 @@
                 </div>
                 <div class="nis2-card">
                   <h4>Entités importantes</h4>
-                  <p>Fournisseurs IT, services numériques, industriels, logistique, plateformes B2B</p>
+                  <p>Secteurs Annexes I et II (énergie, transport, santé, eau, numérique, banques, poste, déchets, chimie, alimentaire, industrie, cloud/SaaS…) <strong>et</strong> au moins un critère de taille : 50–249 employés, CA 10–50 M€ ou bilan 10–43 M€.</p>
                   <p class="nis2-amount"><strong>7 M€</strong> ou <strong>1,4 % du CA mondial</strong> (le plus élevé)</p>
                 </div>
               </div>
-              <h3>Probabilité d'amende (ordre de grandeur)</h3>
-              <p class="nis2-intro">Il n'existe pas de taux officiel. Les estimations ci-dessous sont des ordres de grandeur utilisés par cabinets de conseil et assureurs cyber.</p>
+              <p class="nis2-note">Un prestataire (cloud, infogérant, éditeur SaaS, cybersécurité) peut être qualifié d'entité importante même hors secteur critique s'il fournit des services essentiels à des acteurs NIS2.</p>
+              <h3>Probabilité d'être contrôlé et amendé (ordre de grandeur)</h3>
+              <p class="nis2-intro">Il n'existe pas de taux officiel. Les pourcentages ci-dessous estiment la probabilité d'être contrôlé et de recevoir une amende (pas une pondération du montant). Ordres de grandeur utilisés par cabinets de conseil et assureurs cyber.</p>
               <table class="hypotheses-table nis2-table">
                 <thead>
                   <tr>
                     <th>Situation</th>
-                    <th>Probabilité d'amende annuelle</th>
+                    <th>Probabilité d'être contrôlé et amendé (annuelle)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -279,29 +334,114 @@
               <p class="nis2-note"><strong>Tendance 2025–2026 :</strong> Les contrôles se concentrent sur les secteurs vitaux, les fournisseurs critiques et les entreprises déjà incidentées. La probabilité dépend plus du rôle que de la taille seule.</p>
             </div>
           </details>
-          <div class="results-section">
-            <h2>Impacts personnels en cas de gouvernance défaillante</h2>
-            <p class="impacts-intro">Ces montants ne sont pas des amendes automatiques. Ils représentent une exposition financière et professionnelle plausible quand le pilotage des tiers n'est pas démontrable.</p>
-            <div class="impacts-personnels">
-              <div class="impact-card">
-                <h3>Dirigeants</h3>
-                <p>Exposition personnelle en cas de défaut de pilotage des fournisseurs : frais juridiques, sanctions, responsabilité de gouvernance.</p>
-                <span class="impact-ordre">Ordre de grandeur : dizaines de milliers d'euros</span>
+          </div>
+
+          <!-- Groupe 3 : Risque financier + ROI -->
+          <div class="calc-group calc-group--financier">
+            <h2 class="calc-group-title">3. Risque financier & ROI</h2>
+            <p class="calc-group-desc">Impact potentiel (one-shot) avec probabilité d'occurrence, et retour sur investissement d'une solution de scoring.</p>
+          <div class="results-section results-section--roi">
+            <h2>ROI d'une solution de scoring</h2>
+            <p class="scoring-intro">Une solution de scoring ne supprime pas le risque fournisseur. Elle permet de <strong>réduire une part mesurable</strong> de l'exposition (gouvernance, priorisation, traçabilité). Le ROI ci-dessous repose sur une réduction réaliste du risque, par type.</p>
+            <p class="personnalisation-intro">Part pondérée qu'une solution de scoring cyber peut avoir sur les impacts possibles (réf. marché : 20–40 %, sources : Verizon DBIR, ENISA, Marsh). Cette part <strong>ne modifie pas l'impact total</strong> : elle sert uniquement à calculer la part réductible par le scoring.</p>
+            <div class="reduction-params">
+              <label for="inputRatioCyber">Part pondérée utilisée</label>
+              <input type="number" id="inputRatioCyber" min="20" max="40" step="1" value="40"> %
+            </div>
+            <p class="formule-note formule-note--reduction">Exposition réductible = (Impact total × part pondérée) + Amende max NIS2. Ce montant est comparé à l'investissement pour le ROI.</p>
+            <div class="chain-explanation" id="chainExplanation">
+              <p class="chain-explanation-title">Les 2 montants expliqués :</p>
+              <ol class="chain-explanation-list" id="chainExplanationList">
+                <li><span class="chain-value" id="chainImpactTotal">—</span> = Impact total (direct + indirect). C'est ce que vous payez <em>si</em> un incident se produit.</li>
+                <li><span class="chain-value" id="chainImpactsReductibles">—</span> = Impacts réductibles. Le scoring ne peut réduire qu'une part de l'impact total (part pondérée).</li>
+              </ol>
+            </div>
+            <div class="roi-grid">
+              <div class="result-card result-card--editable">
+                <span class="result-label">Investissement annuel solution (k€)</span>
+                <div class="result-inputs">
+                  <input type="number" id="inputInvestissement" min="0" step="1" placeholder="k€"> k€
+                </div>
               </div>
-              <div class="impact-card">
-                <h3>CISO / DSI</h3>
-                <p>Mise en cause professionnelle en cas d'incident fournisseur non anticipé : pression board, perte de poste, frais de défense.</p>
-                <span class="impact-ordre">Impact principalement carrière & réputation</span>
+              <div class="result-card result-card--highlight result-card--calculated">
+                <span class="result-label">Impacts réductibles</span>
+                <div class="impacts-reductibles-display">
+                  <span class="result-value result-value--main" id="impactsReductibles">—</span>
+                  <span class="result-ref result-ref--sublabel" id="impactsReductiblesSublabel"></span>
+                  <span class="result-ref result-ref--secondary" id="impactsReductiblesBreakdown"></span>
+                </div>
+                <div class="card-refs card-refs--inline" id="refsImpactsReductibles"></div>
+                <span id="risqueFinancier" class="sr-only" aria-hidden="true"></span>
               </div>
-              <div class="impact-card">
-                <h3>Risk / Compliance</h3>
-                <p>Responsabilité sur la traçabilité et la conformité fournisseurs : audits, sanctions internes, crédibilité.</p>
-                <span class="impact-ordre">Impact fonctionnel et managérial</span>
+              <div class="result-card result-card--highlight result-card--calculated">
+                <span class="result-label">Amendes réductibles</span>
+                <span class="result-value" id="amendesReductibles">—</span>
+                <span class="result-ref result-ref--secondary" id="nis2ProbaRoi"></span>
+              </div>
+              <div class="result-card result-card--highlight result-card--calculated">
+                <span class="result-label">Exposition réductible totale</span>
+                <span class="result-ref">Impacts + Amendes</span>
+                <span class="result-value" id="risqueEviteCyber">—</span>
+              </div>
+              <div class="result-card result-card--highlight result-card--calculated">
+                <span class="result-label">ROI sur les impacts</span>
+                <span class="result-ref">(Impacts réductibles − Investissement) / Investissement</span>
+                <span class="result-value result-big" id="roiImpacts">—</span>
+              </div>
+              <div class="result-card result-card--highlight result-card--calculated">
+                <span class="result-label">ROI sur les amendes</span>
+                <span class="result-ref">(Amendes réductibles − Investissement) / Investissement</span>
+                <span class="result-value result-big" id="roiAmendes">—</span>
+              </div>
+              <div class="result-card result-card--highlight result-card--calculated result-card--full">
+                <span class="result-label">ROI global</span>
+                <span class="result-ref">(Exposition réductible − Investissement) / Investissement</span>
+                <span class="result-value result-big" id="roiValue">—</span>
+                <span class="roi-economie" id="roiEconomie"></span>
               </div>
             </div>
-            <blockquote class="quote quote--impact">
-              Le vrai risque personnel n'est pas l'amende. C'est de ne pas pouvoir démontrer que le risque fournisseur était piloté.
+            <p class="formule-note">Un ROI positif indique que l'exposition réductible dépasse le coût de la solution. Pour 1 € investi, le montant affiché correspond à l'exposition évitée grâce au scoring.</p>
+
+            <details class="roi-explication">
+              <summary>Comment est calculé le ROI ?</summary>
+              <p><strong>ROI global = (Exposition réductible totale − Investissement) / Investissement</strong>, exprimé en %.</p>
+              <p>Le ROI est décomposé en deux : <strong>ROI sur les impacts</strong> (impacts réductibles vs investissement) et <strong>ROI sur les amendes</strong> (amendes réductibles vs investissement). L'exposition réductible = impacts réductibles (impact total × part pondérée) + amende max NIS2.</p>
+            </details>
+            <div class="card-refs" id="refsRoi"></div>
+
+            <h3 class="opportunites-title">Opportunités par direction</h3>
+            <p class="opportunites-intro">Une solution de scoring ne supprime pas le risque fournisseur. Elle permet de <strong>réduire significativement l'exposition</strong>, de prioriser les bons leviers, et surtout de <strong>démontrer une gouvernance active et défendable</strong>.</p>
+            <div class="opportunites-grid">
+              <div class="opportunite-card">
+                <span class="opportunite-badge">Conformité & protection des dirigeants</span>
+                <h4>Dirigeants</h4>
+                <p>Se protéger de l'exposition personnelle : responsabilité de gouvernance, frais juridiques, sanctions. En démontrant une gouvernance fournisseur active et traçable, vous renforcez la défense du management et la valeur actionnariale.</p>
+              </div>
+              <div class="opportunite-card">
+                <span class="opportunite-badge">Carrière & posture cyber</span>
+                <h4>CISO / DSI</h4>
+                <p>Renforcer votre crédibilité professionnelle et éviter la pression du board en cas d'incident fournisseur non anticipé. Une gouvernance démontrable vous positionne comme pilote actif du risque cyber.</p>
+              </div>
+              <div class="opportunite-card">
+                <span class="opportunite-badge">GRC & crédibilité</span>
+                <h4>Risk / Compliance</h4>
+                <p>Exceller aux audits et renforcer la crédibilité de la fonction : traçabilité fournisseurs, conformité documentée, preuves écrites. Une opportunité de leadership sur la gouvernance.</p>
+              </div>
+              <div class="opportunite-card">
+                <span class="opportunite-badge">Continuité & performance</span>
+                <h4>Achats</h4>
+                <p>Sécuriser la continuité d'approvisionnement et anticiper les défaillances fournisseurs. Optimiser les conditions d'achat, prioriser les fournisseurs critiques et démontrer une maîtrise du risque supply chain.</p>
+              </div>
+              <div class="opportunite-card">
+                <span class="opportunite-badge">Exposition & pilotage</span>
+                <h4>Finance</h4>
+                <p>Réduire l'exposition financière liée aux fournisseurs critiques. Piloter le risque de contrepartie, sécuriser les engagements et démontrer une gouvernance financière défendable auprès du board et des assureurs.</p>
+              </div>
+            </div>
+            <blockquote class="quote quote--opportunite">
+              Le vrai enjeu n'est pas l'amende. C'est de pouvoir démontrer une gouvernance active et défendable.
             </blockquote>
+          </div>
           </div>
         </div>
 
@@ -530,40 +670,14 @@
 
         <!-- === ONGLET CONSOLIDÉ === -->
         <div class="tab-panel" id="panel-consolide">
-          <div class="consolide-section">
-            <h2>Synthèse des risques tiers</h2>
-            <div class="consolide-grid">
-              <div class="consolide-card">
-                <span class="consolide-icon">🛡️</span>
-                <h3>Risque cyber</h3>
-                <span class="consolide-value" id="consCyber">—</span>
-                <span class="consolide-label">Risque financier annuel</span>
-              </div>
-              <div class="consolide-card">
-                <span class="consolide-icon">🌍</span>
-                <h3>Risque ESG</h3>
-                <span class="consolide-value" id="consEsg">—</span>
-                <span class="consolide-label">Impact potentiel</span>
-              </div>
-              <div class="consolide-card">
-                <span class="consolide-icon">📜</span>
-                <h3>Risque RGPD</h3>
-                <span class="consolide-value" id="consRgpd">—</span>
-                <span class="consolide-label">Amendes probables</span>
-              </div>
-              <div class="consolide-card">
-                <span class="consolide-icon">💰</span>
-                <h3>Risque défaillances</h3>
-                <span class="consolide-value" id="consDefaillance">—</span>
-                <span class="consolide-label">Risque financier annuel</span>
-              </div>
-            </div>
-          </div>
-          <div class="results-section results-section--highlight">
-            <h2>Exposition globale estimée</h2>
-            <p class="consolide-summary">Risque cyber + défaillances (annuel) + amendes RGPD (si incident) + exposition ESG. Le pilotage des tiers permet de réduire de façon mesurable cette exposition.</p>
-          </div>
+          <p class="tab-note">Vue d'ensemble de tous les risques tiers.</p>
         </div>
+
+        <!-- Éléments consolidés (cachés, utilisés par le PDF) -->
+        <span id="consCyber" class="sr-only" aria-hidden="true">—</span>
+        <span id="consEsg" class="sr-only" aria-hidden="true">—</span>
+        <span id="consRgpd" class="sr-only" aria-hidden="true">—</span>
+        <span id="consDefaillance" class="sr-only" aria-hidden="true">—</span>
 
         <!-- Message défendable + hypothèses -->
         <blockquote class="quote quote--scoring">
@@ -604,6 +718,10 @@
         <!-- CTA -->
         <div class="calculator-cta">
           <button type="button" class="btn btn-primary btn--large" id="btnPdfSynthèse">Télécharger la synthèse PDF</button>
+          <button type="button" class="btn btn-primary btn--large" id="btnSaveCalculs">Sauvegarder les calculs</button>
+          <select id="selectLoadCalculs" class="calculator-load-select" title="Charger une sauvegarde">
+            <option value="">Charger une sauvegarde...</option>
+          </select>
           <button type="button" class="btn btn-primary btn--large" id="btnAddToCrm">Ajouter au CRM</button>
           <a href="index.html#solution" class="btn btn-secondary btn--large">Voir comment réduire le risque fournisseur</a>
         </div>
@@ -623,5 +741,6 @@
   <script src="calculator.js"></script>
   <script src="calculator-pdf.js"></script>
   <script src="calculator-crm.js"></script>
+  <script src="calculator-save.js"></script>
 </body>
 </html>

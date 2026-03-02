@@ -33,7 +33,7 @@
         <div class="client-selector">
           <h2>👤 Client</h2>
           <div class="filters-row">
-            <p class="filters-hint">Les filtres et la fiche prospect (Risque, Direction) déterminent les questions affichées.</p>
+            <p class="filters-hint">Le risque provient des filtres ci-dessus. La direction et les questions s'adaptent aux filtres.</p>
             <div class="filter-group">
               <label class="filter-group-label">Filtrer par risque</label>
               <div class="filter-checkboxes" id="filterRisqueGroup">
@@ -59,11 +59,13 @@
             </div>
           </div>
           <div class="client-selector-row">
-            <div class="fiche-field">
-              <label for="clientSelect">Sélectionner un client</label>
-              <select id="clientSelect">
-                <option value="">-- Choisir ou créer --</option>
-              </select>
+            <div class="fiche-field client-combobox-wrap">
+              <label for="clientSearch">Sélectionner un client</label>
+              <div class="client-combobox">
+                <input type="text" id="clientSearch" class="client-combobox-input" placeholder="Rechercher ou choisir un client…" autocomplete="off">
+                <input type="hidden" id="clientSelect" value="">
+                <ul class="client-combobox-list" id="clientList"></ul>
+              </div>
             </div>
             <div class="client-actions">
               <button type="button" class="btn btn-primary btn--small" id="btnNewClient">+ Nouveau client</button>
@@ -77,15 +79,8 @@
           <h2>📋 Fiche prospect</h2>
           <div class="fiche-grid">
             <div class="fiche-field">
-              <label for="prospectRisque">Risque</label>
-              <select id="prospectRisque">
-                <option value="">-- Choisir --</option>
-                <option value="cyber">🛡️ Cyber</option>
-                <option value="esg">🌍 ESG</option>
-                <option value="rgpd">📜 RGPD</option>
-                <option value="defaillance">💰 Défaillance</option>
-                <option value="consolide">📊 Consolidé</option>
-              </select>
+              <label>Risque</label>
+              <div class="risque-readonly" id="risqueReadonly">Cochéz un ou plusieurs risques dans les filtres ci-dessus</div>
             </div>
             <div class="fiche-field">
               <label for="prospectDirection">Direction</label>
@@ -360,6 +355,27 @@
             <label class="sortie-item"><input type="checkbox" id="sortie1a"> Hypothèse claire de douleur + sponsor potentiel</label>
             <label class="sortie-item"><input type="checkbox" id="sortie1b"> Accord pour approfondir</label>
           </div>
+          <div class="rdv-actions-mutuelles">
+            <h4>🤝 Actions mutuelles</h4>
+            <div class="mutuelles-group">
+              <h5>📤 Actions vendeur</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur1a" data-crm-label="Envoyer compte-rendu"> Envoyer compte-rendu</label>
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur1b" data-crm-label="Envoyer documentation / présentation"> Envoyer documentation / présentation</label>
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur1c" data-crm-label="Impliquer un autre interlocuteur"> Impliquer un autre interlocuteur</label>
+              </div>
+            </div>
+            <div class="mutuelles-group">
+              <h5>📥 Actions client</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="client1a"> Fournir liste fournisseurs / périmètre</label>
+              </div>
+            </div>
+            <div class="mutuelle-date-next">
+              <label for="dateNext1">Date prochaine étape / RDV suivant</label>
+              <input type="date" id="dateNext1">
+            </div>
+          </div>
         </div>
 
         <!-- RDV 2 -->
@@ -433,6 +449,27 @@
             <label class="sortie-item"><input type="checkbox" id="sortie2b"> Process réel compris</label>
             <label class="sortie-item"><input type="checkbox" id="sortie2c"> Décideurs identifiés</label>
           </div>
+          <div class="rdv-actions-mutuelles">
+            <h4>🤝 Actions mutuelles</h4>
+            <div class="mutuelles-group">
+              <h5>📤 Actions vendeur</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur2a" data-crm-label="Organiser démo / POC"> Organiser démo / POC</label>
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur2b" data-crm-label="Envoyer étude de cas / référence"> Envoyer étude de cas / référence</label>
+              </div>
+            </div>
+            <div class="mutuelles-group">
+              <h5>📥 Actions client</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="client2a"> Valider critères de décision</label>
+                <label class="mutuelle-item"><input type="checkbox" id="client2b"> Fournir données pour chiffrage</label>
+              </div>
+            </div>
+            <div class="mutuelle-date-next">
+              <label for="dateNext2">Date prochaine étape / RDV suivant</label>
+              <input type="date" id="dateNext2">
+            </div>
+          </div>
         </div>
 
         <!-- RDV 3 -->
@@ -495,6 +532,27 @@
             <label class="sortie-item"><input type="checkbox" id="sortie3b"> Accès au décideur</label>
             <label class="sortie-item"><input type="checkbox" id="sortie3c"> Feuille de route politique</label>
           </div>
+          <div class="rdv-actions-mutuelles">
+            <h4>🤝 Actions mutuelles</h4>
+            <div class="mutuelles-group">
+              <h5>📤 Actions vendeur</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur3a" data-crm-label="Organiser rencontre avec décideur"> Organiser rencontre avec décideur</label>
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur3b" data-crm-label="Préparer business case / ROI"> Préparer business case / ROI</label>
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur3c" data-crm-label="Rassurer les parties prenantes"> Rassurer les parties prenantes</label>
+              </div>
+            </div>
+            <div class="mutuelles-group">
+              <h5>📥 Actions client</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="client3a"> Valider budget / process achats</label>
+              </div>
+            </div>
+            <div class="mutuelle-date-next">
+              <label for="dateNext3">Date prochaine étape / RDV suivant</label>
+              <input type="date" id="dateNext3">
+            </div>
+          </div>
         </div>
 
         <!-- RDV 4 -->
@@ -528,6 +586,27 @@
             <label class="sortie-item"><input type="checkbox" id="sortie4a"> Accord de principe</label>
             <label class="sortie-item"><input type="checkbox" id="sortie4b"> Lancement achats / juridique</label>
           </div>
+          <div class="rdv-actions-mutuelles">
+            <h4>🤝 Actions mutuelles</h4>
+            <div class="mutuelles-group">
+              <h5>📤 Actions vendeur</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur4a" data-crm-label="Envoyer proposition commerciale"> Envoyer proposition commerciale</label>
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur4b" data-crm-label="Répondre aux objections"> Répondre aux objections</label>
+              </div>
+            </div>
+            <div class="mutuelles-group">
+              <h5>📥 Actions client</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="client4a"> Passer par achats / juridique</label>
+                <label class="mutuelle-item"><input type="checkbox" id="client4b"> Valider périmètre final</label>
+              </div>
+            </div>
+            <div class="mutuelle-date-next">
+              <label for="dateNext4">Date prochaine étape / RDV suivant</label>
+              <input type="date" id="dateNext4">
+            </div>
+          </div>
         </div>
 
         <!-- RDV 5 -->
@@ -549,6 +628,26 @@
           <div class="rdv-notes">
             <label>Notes / Réponses</label>
             <textarea id="notesRdv5" rows="4" placeholder="Saisissez les réponses du prospect..."></textarea>
+          </div>
+          <div class="rdv-actions-mutuelles">
+            <h4>🤝 Actions mutuelles</h4>
+            <div class="mutuelles-group">
+              <h5>📤 Actions vendeur</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="vendeur5a" data-crm-label="Planifier kick-off projet"> Planifier kick-off projet</label>
+              </div>
+            </div>
+            <div class="mutuelles-group">
+              <h5>📥 Actions client</h5>
+              <div class="mutuelles-checkboxes">
+                <label class="mutuelle-item"><input type="checkbox" id="client5a"> Signer le contrat</label>
+                <label class="mutuelle-item"><input type="checkbox" id="client5b"> Finaliser conditions</label>
+              </div>
+            </div>
+            <div class="mutuelle-date-next">
+              <label for="dateNext5">Date prochaine étape</label>
+              <input type="date" id="dateNext5">
+            </div>
           </div>
         </div>
 
@@ -599,6 +698,7 @@
     </div>
   </div>
 
+  <script src="crm.js"></script>
   <script src="processus-vente.js"></script>
 </body>
 </html>

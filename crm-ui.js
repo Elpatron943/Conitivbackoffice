@@ -121,6 +121,27 @@
     if (hiddenEl) hiddenEl.value = '';
   }
 
+  function syncEntrepriseFromContact() {
+    const contactId = document.getElementById('actContactId')?.value || '';
+    const readonlyEl = document.getElementById('actEntrepriseReadonly');
+    const hiddenEl = document.getElementById('actEntrepriseId');
+    if (!readonlyEl || !hiddenEl) return;
+    if (!contactId) {
+      readonlyEl.textContent = '— Sélectionnez un contact —';
+      hiddenEl.value = '';
+      return;
+    }
+    const contact = getContact(contactId);
+    if (!contact?.entrepriseId) {
+      readonlyEl.textContent = '— Aucune entreprise associée —';
+      hiddenEl.value = '';
+      return;
+    }
+    const ent = getEntreprise(contact.entrepriseId);
+    readonlyEl.textContent = ent?.nom || 'Sans nom';
+    hiddenEl.value = contact.entrepriseId;
+  }
+
   function fillActionStatut(type, selectedValue) {
     const workflow = getWorkflowForCampaign(type);
     const isCampaign = !!workflow;
@@ -128,13 +149,27 @@
     const campagneEl = document.getElementById('actCampagneCyberFields');
     const etapeEl = document.getElementById('actCampagneCyberEtape');
     const checkboxWrap = document.getElementById('actEtapeTerminee')?.closest('.form-group');
+    const entrepriseCombobox = document.getElementById('actEntrepriseCombobox');
+    const entrepriseReadonly = document.getElementById('actEntrepriseReadonly');
 
     if (statutGroup) statutGroup.style.display = isCampaign ? 'none' : '';
     if (campagneEl) campagneEl.style.display = isCampaign ? '' : 'none';
     const hint = document.getElementById('actTypeHint');
     if (hint) hint.style.display = isCampaign ? 'none' : 'block';
+    if (entrepriseCombobox) entrepriseCombobox.style.display = isCampaign ? 'none' : '';
+    if (entrepriseReadonly) {
+      entrepriseReadonly.style.display = isCampaign ? 'block' : 'none';
+      if (isCampaign) {
+        syncEntrepriseFromContact();
+      } else {
+        const eid = document.getElementById('actEntrepriseId')?.value || '';
+        setComboboxValue('actEntrepriseSearch', 'actEntrepriseId', eid, () =>
+          getEntreprises().map(e => ({ value: e.id, label: e.nom || 'Sans nom' }))
+        );
+      }
+    }
 
-    if (isCampaign && etapeEl && workflow.length) {
+    if (isCampaign && etapeEl && workflow?.length) {
       const options = workflow.map(w => ({ value: w.id, label: `J${(w.jour || 0) >= 0 ? '+' : ''}${w.jour || 0} — ${w.label}` }));
       const valid = options.some(o => o.value === selectedValue);
       const sel = valid ? selectedValue : workflow[0].id;
@@ -435,12 +470,16 @@
     document.getElementById('actEtapeTerminee').checked = !!a.stepDone;
     document.getElementById('actSujet').value = a.sujet || '';
     document.getElementById('actDescription').value = a.description || '';
-    setComboboxValue('actEntrepriseSearch', 'actEntrepriseId', a.entrepriseId || '', () =>
-      getEntreprises().map(e => ({ value: e.id, label: e.nom || 'Sans nom' }))
-    );
     setComboboxValue('actContactSearch', 'actContactId', a.contactId || '', () =>
       getContacts().map(c => ({ value: c.id, label: (c.prenom + ' ' + c.nom).trim() || c.email || 'Sans nom' }))
     );
+    if (isCampaignType(type)) {
+      syncEntrepriseFromContact();
+    } else {
+      setComboboxValue('actEntrepriseSearch', 'actEntrepriseId', a.entrepriseId || '', () =>
+        getEntreprises().map(e => ({ value: e.id, label: e.nom || 'Sans nom' }))
+      );
+    }
     setComboboxValue('actAffaireSearch', 'actAffaireId', a.affaireId || '', () =>
       getAffaires().map(aa => ({ value: aa.id, label: aa.nom || 'Sans nom' }))
     );
@@ -870,7 +909,9 @@
 
   initCombobox('conEntrepriseSearch', 'conEntrepriseId', 'conEntrepriseList', entOpts);
   initCombobox('actEntrepriseSearch', 'actEntrepriseId', 'actEntrepriseList', entOpts);
-  initCombobox('actContactSearch', 'actContactId', 'actContactList', conOpts);
+  initCombobox('actContactSearch', 'actContactId', 'actContactList', conOpts, () => {
+    if (isCampaignType(document.getElementById('actType')?.value)) syncEntrepriseFromContact();
+  });
   initCombobox('actAffaireSearch', 'actAffaireId', 'actAffaireList', affOpts);
   initCombobox('affEntrepriseSearch', 'affEntrepriseId', 'affEntrepriseList', entOpts, () => {
     clearCombobox('affContactSearch', 'affContactId');

@@ -254,6 +254,17 @@
   resize: vertical;
 }
 
+.act-entreprise-readonly {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-alt, #f5f5f5);
+  border-radius: var(--radius);
+  min-height: 2.25rem;
+  display: flex;
+  align-items: center;
+}
+
 .form-checkboxes {
   display: flex;
   flex-wrap: wrap;

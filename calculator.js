@@ -35,10 +35,16 @@
     return Math.round((min + max) / 2 / 1000);
   }
 
+  function formatThousands(num, decimals) {
+    const parts = Number(num).toFixed(decimals).split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+    return parts.join(',');
+  }
+
   function formatRisk(euros) {
-    if (euros >= 1e6) return (euros / 1e6).toFixed(1).replace('.', ',') + ' M€';
-    if (euros >= 1e3) return Math.round(euros / 1e3) + ' k€';
-    return Math.round(euros) + ' €';
+    if (euros >= 1e6) return formatThousands(euros / 1e6, 1) + ' M€';
+    if (euros >= 1e3) return formatThousands(Math.round(euros / 1e3), 0) + ' k€';
+    return formatThousands(Math.round(euros), 0) + ' €';
   }
 
   // Parse risk string (e.g. "18–72 k€" or "28 k€") to euros
@@ -113,7 +119,24 @@
   }
 
   let lastRiskEuros = null;
+  let lastImpactTotalEuros = null;
   let lastNis2Euros = 0;
+
+  function updateRisqueFinancierDisplay(impactTotalEuros, risk, pViaTiersPct, nis2Euros) {
+    const mainEl = document.getElementById('risqueFinancier');
+    const sublabelEl = document.getElementById('risqueFinancierSublabel');
+    const bdEl = document.getElementById('risqueCyberBreakdown');
+    const totalRisk = risk + (nis2Euros || 0);
+    if (impactTotalEuros != null && impactTotalEuros > 0 && risk > 0 && pViaTiersPct != null) {
+      if (mainEl) mainEl.textContent = formatRisk(impactTotalEuros);
+      if (sublabelEl) sublabelEl.textContent = 'avec une probabilité de ' + pViaTiersPct + ' % de chance que ça arrive dans votre secteur et taille d\'entreprise';
+      if (bdEl) bdEl.textContent = nis2Euros > 0 ? '+ ' + formatRisk(nis2Euros) + ' NIS2' : '';
+    } else {
+      if (mainEl) mainEl.textContent = formatRisk(totalRisk);
+      if (sublabelEl) sublabelEl.textContent = '';
+      if (bdEl) bdEl.textContent = (risk > 0 ? 'Risque cyber : ' + formatRisk(risk) : '') + (nis2Euros > 0 ? (risk > 0 ? ' + ' : '') + 'Exposition NIS2 : ' + formatRisk(nis2Euros) : '');
+    }
+  }
 
   function recalcFromInputs() {
     recalcNis2();
@@ -144,78 +167,71 @@
       document.getElementById('impactIndirect').textContent = indirectK + ' k€';
       document.getElementById('impactTotal').textContent = totalK + ' k€';
       const impactTotalEuros = totalK * 1000;
+      lastImpactTotalEuros = impactTotalEuros;
       if (hasProbas) {
         const pViaTiers = (p1 / 100) * (p2 / 100) * 100;
         const risk = (pViaTiers / 100) * impactTotalEuros;
         lastRiskEuros = risk;
-        const totalRisk = risk + lastNis2Euros;
-        const riskStr = formatRisk(risk);
-        document.getElementById('risqueFinancier').textContent = formatRisk(totalRisk);
-        const bd1 = document.getElementById('risqueCyberBreakdown');
-        if (bd1) bd1.textContent = 'Risque cyber : ' + riskStr + (lastNis2Euros > 0 ? ' + Exposition NIS2 : ' + formatRisk(lastNis2Euros) : '');
+        updateRisqueFinancierDisplay(impactTotalEuros, risk, pViaTiers.toFixed(2), lastNis2Euros);
         const consCyber = document.getElementById('consCyber');
-        if (consCyber) consCyber.textContent = formatRisk(totalRisk);
+        if (consCyber) consCyber.textContent = formatRisk(risk + lastNis2Euros);
       } else if (prob) {
         const [pMin, pMax] = parseProba(prob.pViaTiers);
         const pMid = (pMin + pMax) / 200;
+        const pViaTiers = pMid * 100;
         const risk = pMid * impactTotalEuros;
         lastRiskEuros = risk;
-        const totalRisk = risk + lastNis2Euros;
-        document.getElementById('risqueFinancier').textContent = formatRisk(totalRisk);
-        const bd = document.getElementById('risqueCyberBreakdown');
-        if (bd) bd.textContent = 'Risque cyber : ' + formatRisk(risk) + (lastNis2Euros > 0 ? ' + Exposition NIS2 : ' + formatRisk(lastNis2Euros) : '');
+        updateRisqueFinancierDisplay(impactTotalEuros, risk, pViaTiers.toFixed(2), lastNis2Euros);
         const consCyber = document.getElementById('consCyber');
-        if (consCyber) consCyber.textContent = formatRisk(totalRisk);
+        if (consCyber) consCyber.textContent = formatRisk(risk + lastNis2Euros);
       }
     } else if (impactsRef) {
       document.getElementById('impactDirect').textContent = impactsRef.direct;
       document.getElementById('impactIndirect').textContent = impactsRef.indirect;
       document.getElementById('impactTotal').textContent = impactsRef.total;
+      const [impMin, impMax] = parseImpact(impactsRef.total);
+      lastImpactTotalEuros = (impMin + impMax) / 2;
+    } else {
+      lastImpactTotalEuros = null;
     }
 
     if (hasProbas && !hasImpacts && impactsRef) {
       const pViaTiers = (p1 / 100) * (p2 / 100) * 100;
       const [impMin, impMax] = parseImpact(impactsRef.total);
-      const risk = (pViaTiers / 100) * ((impMin + impMax) / 2);
+      const impactTotalEuros = (impMin + impMax) / 2;
+      const risk = (pViaTiers / 100) * impactTotalEuros;
       lastRiskEuros = risk;
-      const totalRisk = risk + lastNis2Euros;
-      document.getElementById('risqueFinancier').textContent = formatRisk(totalRisk);
-      const bd2 = document.getElementById('risqueCyberBreakdown');
-      if (bd2) bd2.textContent = 'Risque cyber : ' + formatRisk(risk) + (lastNis2Euros > 0 ? ' + Exposition NIS2 : ' + formatRisk(lastNis2Euros) : '');
+      updateRisqueFinancierDisplay(impactTotalEuros, risk, pViaTiers.toFixed(2), lastNis2Euros);
       const consCyber = document.getElementById('consCyber');
-      if (consCyber) consCyber.textContent = formatRisk(totalRisk);
+      if (consCyber) consCyber.textContent = formatRisk(risk + lastNis2Euros);
     } else if (!hasProbas && prob) {
       const refRisque = RISQUE_FINANCIER_ANNUEL[sector]?.[size] || '—';
       lastRiskEuros = parseRiskToEuros(refRisque);
       const risk = lastRiskEuros ?? 0;
-      const totalRisk = risk + lastNis2Euros;
-      document.getElementById('risqueFinancier').textContent = formatRisk(totalRisk);
-      const bd3 = document.getElementById('risqueCyberBreakdown');
-      if (bd3) bd3.textContent = 'Risque cyber : ' + (lastRiskEuros != null ? formatRisk(risk) : refRisque) + (lastNis2Euros > 0 ? ' + Exposition NIS2 : ' + formatRisk(lastNis2Euros) : '');
+      updateRisqueFinancierDisplay(null, risk, null, lastNis2Euros);
       const consCyber = document.getElementById('consCyber');
-      if (consCyber) consCyber.textContent = formatRisk(totalRisk);
+      if (consCyber) consCyber.textContent = formatRisk(risk + lastNis2Euros);
     } else if (!hasImpacts && impactsRef && !hasProbas) {
       const refRisque = RISQUE_FINANCIER_ANNUEL[sector]?.[size] || '—';
       lastRiskEuros = parseRiskToEuros(refRisque);
       const risk = lastRiskEuros ?? 0;
-      const totalRisk = risk + lastNis2Euros;
-      document.getElementById('risqueFinancier').textContent = formatRisk(totalRisk);
-      const bd4 = document.getElementById('risqueCyberBreakdown');
-      if (bd4) bd4.textContent = 'Risque cyber : ' + (lastRiskEuros != null ? formatRisk(risk) : refRisque) + (lastNis2Euros > 0 ? ' + Exposition NIS2 : ' + formatRisk(lastNis2Euros) : '');
+      updateRisqueFinancierDisplay(null, risk, null, lastNis2Euros);
       const consCyber = document.getElementById('consCyber');
-      if (consCyber) consCyber.textContent = formatRisk(totalRisk);
+      if (consCyber) consCyber.textContent = formatRisk(risk + lastNis2Euros);
+    } else if (getSector() && getSize()) {
+      const refRisque = RISQUE_FINANCIER_ANNUEL[getSector()]?.[getSize()];
+      lastRiskEuros = refRisque ? parseRiskToEuros(refRisque) : null;
+      const risk = lastRiskEuros ?? 0;
+      updateRisqueFinancierDisplay(null, risk, null, lastNis2Euros);
+      const consCyber = document.getElementById('consCyber');
+      if (consCyber) consCyber.textContent = formatRisk(risk + lastNis2Euros);
     } else {
       lastRiskEuros = null;
       if (lastNis2Euros > 0) {
-        document.getElementById('risqueFinancier').textContent = formatRisk(lastNis2Euros);
-        const bd5 = document.getElementById('risqueCyberBreakdown');
-        if (bd5) bd5.textContent = 'Exposition NIS2 : ' + formatRisk(lastNis2Euros);
+        updateRisqueFinancierDisplay(null, 0, null, lastNis2Euros);
         const consCyber = document.getElementById('consCyber');
         if (consCyber) consCyber.textContent = formatRisk(lastNis2Euros);
       } else {
-        document.getElementById('risqueFinancier').textContent = '—';
-        const bd5 = document.getElementById('risqueCyberBreakdown');
-        if (bd5) bd5.textContent = 'Risque cyber = Probabilité incident via tiers × Impact total moyen. + Exposition NIS2 (si applicable).';
         const consCyber = document.getElementById('consCyber');
         if (consCyber) consCyber.textContent = '—';
       }
@@ -230,14 +246,50 @@
     const roiEl = document.getElementById('roiValue');
     const economieEl = document.getElementById('roiEconomie');
     const riskEviteEl = document.getElementById('risqueEviteCyber');
+    const impactsEl = document.getElementById('impactsReductibles');
+    const amendesEl = document.getElementById('amendesReductibles');
     if (!roiEl) return;
     const ratioInput = parseFloat(document.getElementById('inputRatioCyber')?.value);
     const ratio = (!isNaN(ratioInput) && ratioInput >= 0 && ratioInput <= 100) ? ratioInput / 100 : 0.40;
-    const ratioNis2 = (typeof REDUCTION_SCORING !== 'undefined' && REDUCTION_SCORING?.rgpd?.default) ?? 0.75;
-    const riskCyber = lastRiskEuros ?? 0;
-    const riskEvite = (riskCyber * ratio) + (lastNis2Euros * ratioNis2);
+    const impactTotalEuros = lastImpactTotalEuros ?? 0;
+    const impactsReductibles = impactTotalEuros * ratio;
+    const amendesReductibles = lastNis2Euros;
+    const riskEvite = impactsReductibles + amendesReductibles;
+    const impactTotalText = document.getElementById('impactTotal')?.textContent;
+    const pViaTiersText = document.getElementById('pViaTiers')?.textContent;
+    if (impactsEl) {
+      impactsEl.textContent = impactsReductibles > 0 ? formatRisk(impactsReductibles) : '—';
+    }
+    const sublabelEl = document.getElementById('impactsReductiblesSublabel');
+    if (sublabelEl) {
+      sublabelEl.textContent = (impactsReductibles > 0 && pViaTiersText && pViaTiersText !== '—')
+        ? 'Probabilité de ' + pViaTiersText + ' que ça arrive'
+        : '';
+    }
+    const breakdownEl = document.getElementById('impactsReductiblesBreakdown');
+    if (breakdownEl) {
+      if (impactsReductibles > 0) {
+        breakdownEl.textContent = 'Part réductible par le scoring : ' + formatRisk(impactsReductibles);
+      } else {
+        breakdownEl.textContent = '';
+      }
+    }
+    const chainImpactTotal = document.getElementById('chainImpactTotal');
+    const chainImpactsReductibles = document.getElementById('chainImpactsReductibles');
+    if (chainImpactTotal) chainImpactTotal.textContent = impactTotalText && impactTotalText !== '—' ? impactTotalText : '—';
+    if (chainImpactsReductibles) chainImpactsReductibles.textContent = impactsReductibles > 0 ? formatRisk(impactsReductibles) : '—';
+    if (amendesEl) amendesEl.textContent = amendesReductibles > 0 ? formatRisk(amendesReductibles) : '—';
+    const nis2ProbaRoiEl = document.getElementById('nis2ProbaRoi');
+    if (nis2ProbaRoiEl) {
+      const probaLabel = document.getElementById('nis2Proba')?.textContent;
+      nis2ProbaRoiEl.textContent = probaLabel ? 'Probabilité d\'être contrôlé et amendé : ' + probaLabel : '';
+    }
+    const roiImpactsEl = document.getElementById('roiImpacts');
+    const roiAmendesEl = document.getElementById('roiAmendes');
     if (investK == null || isNaN(investK) || investK <= 0) {
       roiEl.textContent = '—';
+      if (roiImpactsEl) roiImpactsEl.textContent = '—';
+      if (roiAmendesEl) roiAmendesEl.textContent = '—';
       if (economieEl) economieEl.textContent = '';
       if (riskEviteEl) riskEviteEl.textContent = riskEvite > 0 ? formatRisk(riskEvite) : '—';
       return;
@@ -245,13 +297,18 @@
     const investEuros = investK * 1000;
     if (riskEviteEl) riskEviteEl.textContent = formatRisk(riskEvite);
     const roi = ((riskEvite - investEuros) / investEuros) * 100;
+    const roiImpacts = ((impactsReductibles - investEuros) / investEuros) * 100;
+    const roiAmendes = ((amendesReductibles - investEuros) / investEuros) * 100;
     roiEl.textContent = roi.toFixed(0) + ' %';
+    if (roiImpactsEl) roiImpactsEl.textContent = impactsReductibles > 0 ? roiImpacts.toFixed(0) + ' %' : '—';
+    if (roiAmendesEl) roiAmendesEl.textContent = amendesReductibles > 0 ? roiAmendes.toFixed(0) + ' %' : '—';
     if (economieEl) {
       const economieParEuro = riskEvite / investEuros;
       economieEl.textContent = economieParEuro >= 0.01
-        ? `Pour 1 € investi : ${economieParEuro.toFixed(2).replace('.', ',')} € d'exposition évitée grâce au scoring`
+        ? `Pour 1 € investi : ${formatThousands(economieParEuro, 2)} € d'exposition évitée grâce au scoring`
         : '';
     }
+
   }
 
   // === Onglet Cyber ===
@@ -298,16 +355,34 @@
 
   function recalcNis2() {
     const entityType = document.getElementById('nis2EntityType')?.value;
-    const caM = parseFloat(document.getElementById('nis2Ca')?.value);
-    const situation = document.getElementById('nis2Situation')?.value;
+    const nis2CaEl = document.getElementById('nis2Ca');
+    const caRaw = (nis2CaEl?.value || '').replace(/\s/g, '');
+    let caM = parseFloat(caRaw);
+    if (caM > 10000) {
+      caM = caM / 1e6;
+      if (nis2CaEl && !isNaN(caM)) nis2CaEl.value = formatThousands(caM, caM % 1 ? 1 : 0);
+    }
+    const NIS2_FACTEURS = [
+      { id: 'nis2FacteurIncident', poids: 0.20 },
+      { id: 'nis2FacteurNotification', poids: 0.20 },
+      { id: 'nis2FacteurSecteur', poids: 0.08 },
+      { id: 'nis2FacteurTiers', poids: 0.08 },
+      { id: 'nis2FacteurSignalement', poids: 0.08 },
+      { id: 'nis2FacteurAudit', poids: 0.04 },
+      { id: 'nis2FacteurTaille', poids: 0.04 }
+    ];
+    const baseProba = 0.005;
+    let probaSum = baseProba;
+    NIS2_FACTEURS.forEach(f => {
+      if (document.getElementById(f.id)?.checked) probaSum += f.poids;
+    });
+    const proba = (entityType === 'non_concerne') ? 0 : Math.min(probaSum, 0.70);
 
     const amendeMaxEl = document.getElementById('nis2AmendeMax');
     const probaEl = document.getElementById('nis2Proba');
     const expositionEl = document.getElementById('nis2Exposition');
 
-    const PROBA_NIS2 = { sans: 0.005, incident: 0.30, nonconformite: 0.60 };
-    const proba = PROBA_NIS2[situation] ?? 0.005;
-    const probaLabel = situation === 'sans' ? '< 1 %' : situation === 'incident' ? '30 %' : '60 %';
+    const probaLabel = entityType === 'non_concerne' ? '—' : (proba <= 0.01 ? '< 1 %' : (proba * 100).toFixed(0) + ' %');
 
     let amendeMax = 0;
     if (entityType === 'essentielle') {
@@ -319,13 +394,13 @@
       const pctCa = (caM != null && !isNaN(caM) && caM > 0) ? caM * 1e6 * 0.014 : plafond;
       amendeMax = Math.max(plafond, pctCa);
     }
+    // non_concerne : amendeMax reste à 0
 
-    const exposition = amendeMax * proba;
-    lastNis2Euros = exposition;
+    lastNis2Euros = amendeMax;
 
     if (amendeMaxEl) amendeMaxEl.textContent = amendeMax > 0 ? formatRisk(amendeMax) : '—';
     if (probaEl) probaEl.textContent = probaLabel;
-    if (expositionEl) expositionEl.textContent = exposition > 0 ? formatRisk(exposition) : '—';
+    if (expositionEl) expositionEl.textContent = amendeMax > 0 ? formatRisk(amendeMax) : '—';
   }
 
   // === Onglet ESG ===
@@ -403,7 +478,7 @@
     if (economieEl) {
       const economieParEuro = riskEvite / investEuros;
       economieEl.textContent = economieParEuro >= 0.01
-        ? `Pour 1 € investi : ${economieParEuro.toFixed(2).replace('.', ',')} € d'exposition évitée grâce au scoring`
+        ? `Pour 1 € investi : ${formatThousands(economieParEuro, 2)} € d'exposition évitée grâce au scoring`
         : '';
     }
   }
@@ -504,7 +579,7 @@
     if (economieEl) {
       const economieParEuro = riskEvite / investEuros;
       economieEl.textContent = economieParEuro >= 0.01
-        ? `Pour 1 € investi : ${economieParEuro.toFixed(2).replace('.', ',')} € d'exposition évitée grâce au scoring`
+        ? `Pour 1 € investi : ${formatThousands(economieParEuro, 2)} € d'exposition évitée grâce au scoring`
         : '';
     }
   }
@@ -593,7 +668,7 @@
     if (economieEl) {
       const economieParEuro = riskEvite / investEuros;
       economieEl.textContent = economieParEuro >= 0.01
-        ? `Pour 1 € investi : ${economieParEuro.toFixed(2).replace('.', ',')} € d'exposition évitée grâce au scoring`
+        ? `Pour 1 € investi : ${formatThousands(economieParEuro, 2)} € d'exposition évitée grâce au scoring`
         : '';
     }
   }
@@ -618,7 +693,8 @@
     const rgpdEl = document.getElementById('consRgpd');
     const defEl = document.getElementById('consDefaillance');
 
-    if (cyberEl) cyberEl.textContent = lastRiskEuros != null ? formatRisk(lastRiskEuros) : (RISQUE_FINANCIER_ANNUEL[sector]?.[size] || '—');
+    const cyberVal = lastRiskEuros != null ? formatRisk((lastRiskEuros || 0) + lastNis2Euros) : (RISQUE_FINANCIER_ANNUEL[sector]?.[size] || '—');
+    if (cyberEl) cyberEl.textContent = cyberVal;
     if (esgEl) esgEl.textContent = lastEsgEuros != null ? formatRisk(lastEsgEuros) : (RISQUE_ESG[sector]?.[size]?.impact || '—');
     if (rgpdEl) rgpdEl.textContent = lastRgpdEuros != null ? formatRisk(lastRgpdEuros) : (AMENDES_REGLEMENTAIRES[sector]?.[size]?.total || '—');
     if (defEl) defEl.textContent = lastDefaillanceEuros != null ? formatRisk(lastDefaillanceEuros) : (RISQUE_FINANCIER_DEFAILLANCE[sector]?.[size] || '—');
@@ -632,7 +708,7 @@
       const matchSize = !r.sizes?.length || r.sizes.includes(size);
       return matchSector && matchSize;
     });
-    const cardIds = { proba: 'refsProba', tendance2026: 'refsTendance2026', impacts: 'refsImpacts', risque: 'refsRisque', roi: 'refsRoi', reduction: 'refsReduction' };
+    const cardIds = { proba: 'refsProba', tendance2026: 'refsTendance2026', impacts: 'refsImpacts', risque: 'refsImpactsReductibles', roi: 'refsRoi', reduction: 'refsReduction' };
     Object.entries(cardIds).forEach(([card, id]) => {
       const cardRefs = refs.filter(r => r.cards?.includes(card));
       const el = document.getElementById(id);
@@ -681,10 +757,20 @@
     }
     document.getElementById('inputRatioCyber')?.addEventListener('input', recalcFromInputs);
     document.getElementById('inputRatioCyber')?.addEventListener('change', recalcFromInputs);
-    ['nis2EntityType', 'nis2Ca', 'nis2Situation'].forEach(id => {
-      document.getElementById(id)?.addEventListener('input', recalcFromInputs);
-      document.getElementById(id)?.addEventListener('change', recalcFromInputs);
+    document.getElementById('nis2EntityType')?.addEventListener('change', recalcFromInputs);
+    document.querySelectorAll('.nis2-facteur-cb').forEach(cb => {
+      cb.addEventListener('change', recalcFromInputs);
     });
+    const nis2CaEl = document.getElementById('nis2Ca');
+    if (nis2CaEl) {
+      nis2CaEl.addEventListener('input', recalcFromInputs);
+      nis2CaEl.addEventListener('change', recalcFromInputs);
+      nis2CaEl.addEventListener('blur', function () {
+        const raw = this.value.replace(/\s/g, '');
+        const n = parseFloat(raw);
+        if (!isNaN(n) && n >= 0) this.value = formatThousands(n, n % 1 ? 1 : 0);
+      });
+    }
     document.getElementById('inputEsgImpact')?.addEventListener('input', recalcEsg);
     document.getElementById('inputEsgImpact')?.addEventListener('change', recalcEsg);
     document.getElementById('inputInvestissementEsg')?.addEventListener('input', recalcEsg);

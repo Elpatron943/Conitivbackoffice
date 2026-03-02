@@ -67,6 +67,23 @@
   margin: 0;
 }
 
+.risque-readonly {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+  min-height: 2.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.risque-readonly--set {
+  color: var(--color-text);
+  background: rgba(13, 71, 161, 0.06);
+  font-weight: 500;
+}
+
 .client-selector-row {
   display: flex;
   flex-wrap: wrap;
@@ -77,6 +94,55 @@
 .client-selector .fiche-field {
   flex: 1;
   min-width: 200px;
+}
+
+/* Client combobox */
+.client-combobox-wrap {
+  min-width: 280px;
+}
+.client-combobox {
+  position: relative;
+}
+.client-combobox-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+.client-combobox-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 100;
+  display: none;
+}
+.client-combobox-list.client-combobox-list--open {
+  display: block;
+}
+.client-combobox-list li {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.client-combobox-list li:hover,
+.client-combobox-list li.client-combobox-item--selected {
+  background: rgba(13, 71, 161, 0.08);
+}
+.client-combobox-list .client-combobox-crm-badge {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin-left: 0.35rem;
 }
 
 .client-actions {
@@ -424,6 +490,65 @@
 
 .rdv-calculator-link {
   margin-bottom: 1.5rem;
+}
+
+/* Actions mutuelles */
+.rdv-actions-mutuelles {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(46, 125, 50, 0.06);
+  border-radius: var(--radius);
+  border-left: 3px solid #2e7d32;
+}
+
+.rdv-actions-mutuelles h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.mutuelles-group {
+  margin-bottom: 0.75rem;
+}
+.mutuelles-group h5 {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+  color: #374151;
+}
+.mutuelles-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mutuelle-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.mutuelle-date-next {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.mutuelle-date-next label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.mutuelle-date-next input {
+  padding: 0.4rem 0.5rem;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
 }
 
 /* Synthèse client */

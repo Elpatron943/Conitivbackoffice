@@ -12,7 +12,7 @@
   };
 
   const SECTORS = { industrie: 'Industrie', finance: 'Finance', retail: 'Retail', sante: 'Santé', telecom: 'Télécom', services: 'Services' };
-  const SIZES = { pme: 'PME', eti: 'ETI', grand: 'Grande entreprise' };
+  const SIZES = { pme: 'PME (10–250)', eti_inf: 'ETI (250–1000)', eti_sup: 'ETI (1000–5000)', grand: 'Grande entreprise (>5000)' };
 
   const AFFAIRE_STAGES = {
     prospect: { label: 'Prospect', color: '#6b7280' },
@@ -39,13 +39,17 @@
     id: 'campagne_cyber',
     nom: 'Campagne cyber',
     steps: [
-      { id: 'preparation', label: 'Préparation', jour: -2, description: 'Recherche & veille' },
-      { id: 'email1', label: 'Email 1 envoyé', jour: 0, description: 'Demande de connexion' },
-      { id: 'avant_call1', label: 'Avant Call #1', jour: 3, description: 'Interaction passive' },
-      { id: 'apres_email2', label: 'Après Email 2', jour: 6, description: 'Message court métier' },
-      { id: 'avant_email3', label: 'Avant Email 3', jour: 10, description: 'Interaction contenu' },
-      { id: 'apres_email3', label: 'Après Email 3', jour: 15, description: 'Message audit' },
-      { id: 'breakup', label: 'Breakup', jour: 22, description: 'Dernier message' }
+      { id: 'prechauffage', label: 'Pré-chauffage (J-3 à J-1)', jour: -1, description: 'LinkedIn silencieux : visite profil, like / veille métier' },
+      { id: 'j0_email1', label: 'J0 — Email 1 : Screening domaine', jour: 0, description: 'Signaux visibles (DNS, TLS, email, surface externe) + LinkedIn demande de connexion (sans pitch)' },
+      { id: 'j2_call1', label: 'J2 — Call #1', jour: 2, description: 'Vérifier intérêt, qualifier le sujet + LinkedIn post-call visite profil' },
+      { id: 'j5_email2', label: 'J5 — Email 2 : Pression externe', jour: 5, description: 'Assureurs / clients / régulateurs + LinkedIn like / interaction passive' },
+      { id: 'j7_call2', label: 'J7 — Call #2', jour: 7, description: 'Identifier pression réelle + LinkedIn (si connecté) message métier' },
+      { id: 'j10_email3', label: 'J10 — Email 3 : Benchmark sectoriel', jour: 10, description: 'Comparaison pairs / maturité + LinkedIn like / commentaire expert' },
+      { id: 'j14_call3', label: 'J14 — Call #3', jour: 14, description: 'Dernier call de qualification + LinkedIn post-call visite profil' },
+      { id: 'j17_email4', label: 'J17 — Email 4 : Audit gratuit cadré', jour: 17, description: '30 min / sans accès / livrable 1 page + LinkedIn message audit (permission-based)' },
+      { id: 'j21_email5', label: 'J21 — Email 5 : Breakup', jour: 21, description: 'Clôture élégante' },
+      { id: 'j22_linkedin_breakup', label: 'J22 — LinkedIn breakup', jour: 22, description: 'Message de sortie propre' },
+      { id: 'j30_call_final', label: 'J30 — Call final', jour: 30, description: 'Dernière vérification périmètre (si compte stratégique)' }
     ]
   };
 
@@ -233,6 +237,12 @@
     if (!list || list.length === 0) {
       list = [DEFAULT_CAMPAIGN_CYBER];
       save('campaignTypes', list);
+    } else {
+      const idx = list.findIndex(c => c.id === 'campagne_cyber');
+      if (idx >= 0 && list[idx].steps?.length === 7) {
+        list[idx] = { ...list[idx], steps: DEFAULT_CAMPAIGN_CYBER.steps };
+        save('campaignTypes', list);
+      }
     }
     return list;
   }

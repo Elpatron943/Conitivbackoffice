@@ -57,7 +57,8 @@
             <select id="filterEntrepriseTaille">
               <option value="">Toutes les tailles</option>
               <option value="pme">PME</option>
-              <option value="eti">ETI</option>
+              <option value="eti_inf">ETI (250–1000)</option>
+              <option value="eti_sup">ETI (1000–5000)</option>
               <option value="grand">Grande entreprise</option>
             </select>
           </div>
@@ -123,7 +124,7 @@
       <h2 id="modalCampaignTypeTitle">Nouveau type de campagne</h2>
       <form id="formCampaignType">
         <input type="hidden" id="ctId">
-        <div class="form-group"><label>Nom *</label><input type="text" id="ctNom" required placeholder="Ex. : Campagne cyber"></div>
+        <div class="form-group"><label>Nom *</label><input type="text" id="ctNom" required placeholder="Ex. : Campagne cyber (Pré-chauffage → J30)"></div>
         <div class="form-group">
           <label>Étapes du workflow</label>
           <div id="ctStepsList" class="ct-steps-list"></div>
@@ -162,7 +163,8 @@
             <select id="entTaille">
               <option value="">—</option>
               <option value="pme">PME</option>
-              <option value="eti">ETI</option>
+              <option value="eti_inf">ETI (250–1000)</option>
+              <option value="eti_sup">ETI (1000–5000)</option>
               <option value="grand">Grande entreprise</option>
             </select>
           </div>
@@ -235,7 +237,7 @@
         <div class="form-row">
           <div class="form-group"><label>Type</label>
             <select id="actType"></select>
-            <small class="form-hint" id="actTypeHint">Sélectionnez « Campagne cyber » pour le workflow en 7 étapes</small>
+            <small class="form-hint" id="actTypeHint">Sélectionnez « Campagne cyber » pour le workflow Pré-chauffage → J0 → J30</small>
           </div>
           <div id="actStatutGroup" class="form-group"><label>Statut</label>
             <select id="actStatut"></select>
@@ -256,20 +258,23 @@
         </div>
         <div class="form-group"><label>Sujet *</label><input type="text" id="actSujet" required></div>
         <div class="form-group"><label>Description</label><textarea id="actDescription" rows="3"></textarea></div>
-        <div class="form-row">
-          <div class="form-group"><label>Entreprise</label>
-            <div class="crm-combobox">
-              <input type="text" id="actEntrepriseSearch" class="crm-combobox-input" placeholder="Rechercher une entreprise…" autocomplete="off">
-              <input type="hidden" id="actEntrepriseId">
-              <ul class="crm-combobox-list" id="actEntrepriseList"></ul>
-            </div>
-          </div>
-          <div class="form-group"><label>Contact</label>
+        <div class="form-row" id="actContactEntrepriseRow">
+          <div class="form-group" id="actContactGroup">
+            <label>Contact</label>
             <div class="crm-combobox">
               <input type="text" id="actContactSearch" class="crm-combobox-input" placeholder="Rechercher un contact…" autocomplete="off">
               <input type="hidden" id="actContactId">
               <ul class="crm-combobox-list" id="actContactList"></ul>
             </div>
+          </div>
+          <div class="form-group" id="actEntrepriseGroup">
+            <label>Entreprise</label>
+            <div class="crm-combobox" id="actEntrepriseCombobox">
+              <input type="text" id="actEntrepriseSearch" class="crm-combobox-input" placeholder="Rechercher une entreprise…" autocomplete="off">
+              <input type="hidden" id="actEntrepriseId">
+              <ul class="crm-combobox-list" id="actEntrepriseList"></ul>
+            </div>
+            <div id="actEntrepriseReadonly" class="act-entreprise-readonly" style="display:none"></div>
           </div>
           <div class="form-group"><label>Affaire</label>
             <div class="crm-combobox">

@@ -34,8 +34,10 @@
 
   const METRIQUES_IDS = ['metriqueCA', 'metriqueEffectif', 'metriqueFournisseursTotal', 'metriqueFournisseursCritiques', 'metriqueBudgetIT', 'metriqueETPRisque', 'metriqueTauxCouverture', 'metriqueImpactEstime', 'metriqueBudgetProjet'];
 
+  let currentCrmActionsCreated = {};
+
   function collectFormState() {
-    const state = { prospect: {}, notes: {}, checkboxes: {}, radios: {}, questions: {}, metriques: {} };
+    const state = { prospect: {}, notes: {}, checkboxes: {}, radios: {}, questions: {}, metriques: {}, datesNext: {}, crmActionsCreated: currentCrmActionsCreated };
     const prospectNom = document.getElementById('prospectNom');
     const prospectContact = document.getElementById('prospectContact');
     const prospectDate = document.getElementById('prospectDate');
@@ -44,7 +46,9 @@
     if (prospectContact) state.prospect.contact = prospectContact.value;
     if (prospectDate) state.prospect.date = prospectDate.value;
     if (prospectRdv) state.prospect.rdv = prospectRdv.value;
-    const prospectFields = ['risque', 'direction', 'secteur', 'industrie', 'modele', 'presence', 'enjeux', 'structure', 'siege', 'fonctions', 'pilotage', 'reporting', 'outils'];
+    const filterRisques = getSelectedFilterRisques();
+    state.prospect.risque = filterRisques.length > 0 ? filterRisques[0] : '';
+    const prospectFields = ['direction', 'secteur', 'industrie', 'modele', 'presence', 'enjeux', 'structure', 'siege', 'fonctions', 'pilotage', 'reporting', 'outils'];
     prospectFields.forEach(f => {
       const el = document.getElementById('prospect' + f.charAt(0).toUpperCase() + f.slice(1));
       if (el) state.prospect[f] = el.value;
@@ -75,17 +79,23 @@
       if (el && el.value !== '') state.metriques[id] = el.value;
     });
 
+    ['dateNext1', 'dateNext2', 'dateNext3', 'dateNext4', 'dateNext5'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.value) state.datesNext[id] = el.value;
+    });
+
     return state;
   }
 
   function applyFormState(state) {
     if (!state) return;
     if (state.prospect) {
-      const prospectMap = { nom: 'prospectNom', contact: 'prospectContact', date: 'prospectDate', rdv: 'prospectRdv', risque: 'prospectRisque', direction: 'prospectDirection', secteur: 'prospectSecteur', industrie: 'prospectIndustrie', modele: 'prospectModele', presence: 'prospectPresence', enjeux: 'prospectEnjeux', structure: 'prospectStructure', siege: 'prospectSiege', fonctions: 'prospectFonctions', pilotage: 'prospectPilotage', reporting: 'prospectReporting', outils: 'prospectOutils' };
+      const prospectMap = { nom: 'prospectNom', contact: 'prospectContact', date: 'prospectDate', rdv: 'prospectRdv', direction: 'prospectDirection', secteur: 'prospectSecteur', industrie: 'prospectIndustrie', modele: 'prospectModele', presence: 'prospectPresence', enjeux: 'prospectEnjeux', structure: 'prospectStructure', siege: 'prospectSiege', fonctions: 'prospectFonctions', pilotage: 'prospectPilotage', reporting: 'prospectReporting', outils: 'prospectOutils' };
       Object.entries(prospectMap).forEach(([key, id]) => {
         const el = document.getElementById(id);
         if (el) el.value = state.prospect[key] || '';
       });
+      if (state.prospect.risque) setFilterRisqueCheckboxes(state.prospect.risque);
     }
     if (state.notes) {
       Object.entries(state.notes).forEach(([id, val]) => {
@@ -119,7 +129,34 @@
         if (el) el.value = val;
       });
     }
+    if (state.datesNext) {
+      Object.entries(state.datesNext).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val || '';
+      });
+    }
+    currentCrmActionsCreated = state.crmActionsCreated || {};
     updateQuestionVisibility();
+  }
+
+  function setFilterRisqueCheckboxes(risque) {
+    document.querySelectorAll('input[name="filterRisque"]').forEach(cb => {
+      cb.checked = (cb.value === risque);
+    });
+    updateRisqueReadonly();
+  }
+
+  function updateRisqueReadonly() {
+    const el = document.getElementById('risqueReadonly');
+    if (!el) return;
+    const risques = getSelectedFilterRisques();
+    if (risques.length === 0) {
+      el.textContent = 'Cochez un ou plusieurs risques dans les filtres ci-dessus';
+      el.classList.remove('risque-readonly--set');
+    } else {
+      el.textContent = risques.map(r => getRisqueLabel(r)).join(', ');
+      el.classList.add('risque-readonly--set');
+    }
   }
 
   function getSelectedFilterRisques() {
@@ -130,36 +167,112 @@
     return Array.from(document.querySelectorAll('input[name="filterDirection"]:checked')).map(el => el.value);
   }
 
-  function refreshClientSelect() {
-    const sel = document.getElementById('clientSelect');
-    if (!sel) return;
+  function getClientOptions() {
     const clients = getClients();
     const filterRisques = getSelectedFilterRisques();
     const filterDirections = getSelectedFilterDirections();
-    const filtered = clients.filter(c => {
+    const filteredClients = clients.filter(c => {
       const matchRisque = filterRisques.length === 0 || filterRisques.includes(c.risque || '');
       const matchDirection = filterDirections.length === 0 || filterDirections.includes(c.direction || '');
       return matchRisque && matchDirection;
     });
-    const current = sel.value;
-    sel.innerHTML = '<option value="">-- Choisir ou créer --</option>' +
-      filtered.map(c => {
-        const badges = [];
-        if (c.risque) badges.push(getRisqueLabel(c.risque));
-        if (c.direction) badges.push(getDirectionLabel(c.direction));
-        const suffix = badges.length ? ` (${badges.join(', ')})` : '';
-        return `<option value="${c.id}">${c.name}${suffix}</option>`;
+    const clientIds = new Set(clients.map(c => c.id));
+    const options = filteredClients.map(c => {
+      const badges = [];
+      if (c.risque) badges.push(getRisqueLabel(c.risque));
+      if (c.direction) badges.push(getDirectionLabel(c.direction));
+      const suffix = badges.length ? ` (${badges.join(', ')})` : '';
+      return { value: c.id, label: c.name + suffix, source: 'processus' };
+    });
+    if (typeof ConitivCRM !== 'undefined') {
+      const entreprises = ConitivCRM.getEntreprises();
+      entreprises.forEach(e => {
+        const slug = slugify(e.nom || '');
+        if (!slug || clientIds.has(slug)) return;
+        options.push({ value: 'crm_' + e.id, label: (e.nom || 'Sans nom'), source: 'crm', entreprise: e });
+      });
+    }
+    return options;
+  }
+
+  function refreshClientCombobox() {
+    const searchEl = document.getElementById('clientSearch');
+    const hiddenEl = document.getElementById('clientSelect');
+    if (!searchEl || !hiddenEl) return;
+    const opts = getClientOptions();
+    const current = hiddenEl.value;
+    const opt = opts.find(o => o.value === current || (o.source === 'processus' && o.value === current));
+    searchEl.value = opt ? opt.label : '';
+  }
+
+  function initClientCombobox() {
+    const searchEl = document.getElementById('clientSearch');
+    const hiddenEl = document.getElementById('clientSelect');
+    const listEl = document.getElementById('clientList');
+    if (!searchEl || !hiddenEl || !listEl) return;
+    if (searchEl.dataset.comboboxInit) return;
+    searchEl.dataset.comboboxInit = '1';
+
+    function showList() {
+      const q = (searchEl.value || '').toLowerCase().trim();
+      const opts = getClientOptions();
+      const filtered = q ? opts.filter(o => (o.label || '').toLowerCase().includes(q)) : opts;
+      const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+      listEl.innerHTML = filtered.slice(0, 60).map(o => {
+        const badge = o.source === 'crm' ? ' <span class="client-combobox-crm-badge">(CRM)</span>' : '';
+        return `<li data-value="${esc(o.value)}" data-label="${esc(o.label)}" data-source="${o.source || ''}">${esc(o.label)}${badge}</li>`;
       }).join('');
-    if (current && filtered.some(c => c.id === current)) sel.value = current;
-    else if (current && !filtered.some(c => c.id === current)) sel.value = '';
+      listEl.classList.add('client-combobox-list--open');
+      listEl.querySelectorAll('li').forEach(li => {
+        li.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          const val = li.dataset.value || '';
+          const src = li.dataset.source || '';
+          hiddenEl.value = val;
+          searchEl.value = li.dataset.label || '';
+          listEl.classList.remove('client-combobox-list--open');
+          if (src === 'crm' && val.startsWith('crm_')) {
+            const entrepriseId = val.slice(4);
+            const entreprises = typeof ConitivCRM !== 'undefined' ? ConitivCRM.getEntreprises() : [];
+            const ent = entreprises.find(e => e.id === entrepriseId);
+            if (ent) {
+              const id = slugify(ent.nom || '');
+              const clients = getClients();
+              if (!clients.some(c => c.id === id)) {
+                clients.push({ id, name: ent.nom || 'Sans nom' });
+                saveClients(clients);
+              }
+              hiddenEl.value = id;
+              clearForm();
+              const p = document.getElementById('prospectNom');
+              if (p) p.value = ent.nom || '';
+              load(id);
+              showToast('Client créé à partir du CRM. Remplissez la fiche et enregistrez.');
+            }
+          } else {
+            load(val);
+          }
+        });
+      });
+    }
+
+    function hideList() {
+      setTimeout(() => listEl.classList.remove('client-combobox-list--open'), 150);
+    }
+
+    searchEl.addEventListener('focus', showList);
+    searchEl.addEventListener('input', showList);
+    searchEl.addEventListener('blur', hideList);
+    searchEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { searchEl.blur(); listEl.classList.remove('client-combobox-list--open'); }
+    });
   }
 
   function updateQuestionVisibility() {
     const filterRisques = getSelectedFilterRisques();
     const filterDirections = getSelectedFilterDirections();
-    const prospectRisque = document.getElementById('prospectRisque')?.value || '';
     const prospectDirection = document.getElementById('prospectDirection')?.value || '';
-    const riskContext = filterRisques.length > 0 ? filterRisques : (prospectRisque ? [prospectRisque] : []);
+    const riskContext = filterRisques;
     const directionContext = filterDirections.length > 0 ? filterDirections : (prospectDirection ? [prospectDirection] : []);
     document.querySelectorAll('.question-block[data-risque], .question-block[data-direction]').forEach(block => {
       const blockRisque = block.dataset.risque || '';
@@ -208,20 +321,25 @@
 
   function load(clientId) {
     if (!clientId) {
-      applyFormState({ prospect: {}, notes: {}, questions: {}, checkboxes: {}, radios: {}, metriques: {}, actionsCommunes: '' });
+      currentCrmActionsCreated = {};
+      applyFormState({ prospect: {}, notes: {}, questions: {}, checkboxes: {}, radios: {}, metriques: {}, actionsCommunes: '', datesNext: {} });
+      document.querySelectorAll('input[name="filterRisque"]').forEach(cb => { cb.checked = false; });
+      updateRisqueReadonly();
+      updateQuestionVisibility();
       return;
     }
     try {
       const raw = localStorage.getItem(clientPrefix + clientId);
       if (raw) applyFormState(JSON.parse(raw));
-      else applyFormState({ prospect: {}, notes: {}, questions: {}, checkboxes: {}, radios: {}, metriques: {}, actionsCommunes: '' });
+      else applyFormState({ prospect: {}, notes: {}, questions: {}, checkboxes: {}, radios: {}, metriques: {}, actionsCommunes: '', datesNext: {} });
     } catch (e) {
       console.warn('Chargement impossible:', e);
     }
   }
 
   function clearForm() {
-    applyFormState({ prospect: {}, notes: {}, questions: {}, checkboxes: {}, radios: {}, metriques: {}, actionsCommunes: '' });
+    currentCrmActionsCreated = {};
+    applyFormState({ prospect: {}, notes: {}, questions: {}, checkboxes: {}, radios: {}, metriques: {}, actionsCommunes: '', datesNext: {} });
     const r = document.getElementById('prospectRdv');
     if (r) r.value = '1';
   }
@@ -234,13 +352,14 @@
       if (clients.some(c => c.id === id)) {
         showToast('Ce client existe déjà.', 'warning');
         document.getElementById('clientSelect').value = id;
+        refreshClientCombobox();
         load(id);
         return;
       }
       clients.push({ id, name: name.trim() });
       saveClients(clients);
-      refreshClientSelect();
       document.getElementById('clientSelect').value = id;
+      refreshClientCombobox();
       clearForm();
       const p = document.getElementById('prospectNom');
       if (p) p.value = name.trim();
@@ -259,8 +378,8 @@
       const clients = getClients().filter(c => c.id !== clientId);
       saveClients(clients);
       localStorage.removeItem(clientPrefix + clientId);
-      refreshClientSelect();
       document.getElementById('clientSelect').value = '';
+      refreshClientCombobox();
       clearForm();
       showToast('Client supprimé.');
     });
@@ -446,6 +565,32 @@
   </div>
 
   <div class="section">
+    <h2>Actions mutuelles par RDV</h2>
+    ${[1,2,3,4,5].map(rdv => {
+      const vendeurChecked = Object.entries(state.checkboxes || {}).filter(([k,v]) => k.startsWith('vendeur' + rdv) && v).map(([k]) => k);
+      const clientChecked = Object.entries(state.checkboxes || {}).filter(([k,v]) => k.startsWith('client' + rdv) && v).map(([k]) => k);
+      const dateNext = state.datesNext?.['dateNext' + rdv];
+      if (vendeurChecked.length === 0 && clientChecked.length === 0 && !dateNext) return '';
+      const labels = { vendeur1a:'Envoyer compte-rendu', vendeur1b:'Envoyer documentation / présentation', vendeur1c:'Impliquer un autre interlocuteur',
+        vendeur2a:'Organiser démo / POC', vendeur2b:'Envoyer étude de cas / référence',
+        vendeur3a:'Organiser rencontre avec décideur', vendeur3b:'Préparer business case / ROI', vendeur3c:'Rassurer les parties prenantes',
+        vendeur4a:'Envoyer proposition commerciale', vendeur4b:'Répondre aux objections',
+        vendeur5a:'Planifier kick-off projet',
+        client1a:'Fournir liste fournisseurs / périmètre',
+        client2a:'Valider critères de décision', client2b:'Fournir données pour chiffrage',
+        client3a:'Valider budget / process achats',
+        client4a:'Passer par achats / juridique', client4b:'Valider périmètre final',
+        client5a:'Signer le contrat', client5b:'Finaliser conditions' };
+      const vItems = vendeurChecked.map(id => labels[id] || id);
+      const cItems = clientChecked.map(id => labels[id] || id);
+      const parts = [];
+      if (vItems.length) parts.push('Vendeur: ' + vItems.join(' • '));
+      if (cItems.length) parts.push('Client: ' + cItems.join(' • '));
+      return `<p><strong>RDV ${rdv}</strong>${parts.length ? ': ' + parts.join(' — ') : ''}${dateNext ? ' — Prochaine étape: ' + dateNext : ''}</p>`;
+    }).filter(Boolean).join('') || '<p>—</p>'}
+  </div>
+
+  <div class="section">
     <h2>Actions communes / Prochaines étapes</h2>
     <div class="actions">${escapeHtml(state.actionsCommunes || 'À définir ensemble.')}</div>
   </div>
@@ -465,23 +610,20 @@
   }
 
   function init() {
-    refreshClientSelect();
+    initClientCombobox();
+    refreshClientCombobox();
     const clientId = getCurrentClientId();
     if (clientId) load(clientId);
-    else updateQuestionVisibility();
-
-    document.getElementById('clientSelect')?.addEventListener('change', function () {
-      load(this.value);
-    });
+    else { updateQuestionVisibility(); updateRisqueReadonly(); }
     document.getElementById('filterRisqueGroup')?.addEventListener('change', () => {
-      refreshClientSelect();
+      refreshClientCombobox();
       updateQuestionVisibility();
+      updateRisqueReadonly();
     });
     document.getElementById('filterDirectionGroup')?.addEventListener('change', () => {
-      refreshClientSelect();
+      refreshClientCombobox();
       updateQuestionVisibility();
     });
-    document.getElementById('prospectRisque')?.addEventListener('change', updateQuestionVisibility);
     document.getElementById('prospectDirection')?.addEventListener('change', updateQuestionVisibility);
     document.getElementById('btnNewClient')?.addEventListener('click', newClient);
     document.getElementById('btnDeleteClient')?.addEventListener('click', deleteClient);
@@ -497,6 +639,40 @@
     document.querySelectorAll('input, textarea, select').forEach(el => {
       el.addEventListener('change', debouncedSave);
       el.addEventListener('input', debouncedSave);
+    });
+
+    document.querySelectorAll('input[data-crm-label]').forEach(cb => {
+      cb.addEventListener('change', function () {
+        if (!this.checked) return;
+        const clientId = getCurrentClientId();
+        if (!clientId) {
+          showToast('Sélectionnez ou créez un client pour créer une action CRM.', 'warning');
+          return;
+        }
+        if (currentCrmActionsCreated[this.id]) return;
+        const nom = (document.getElementById('prospectNom')?.value || '').trim();
+        if (!nom) {
+          showToast('Indiquez le nom du prospect pour créer une action CRM.', 'warning');
+          return;
+        }
+        if (typeof ConitivCRM === 'undefined') {
+          showToast('CRM non chargé.', 'error');
+          return;
+        }
+        const label = this.dataset.crmLabel || this.id;
+        let entrepriseId = ConitivCRM.getEntreprises().find(e => (e.nom || '').toLowerCase().trim() === nom.toLowerCase())?.id;
+        if (!entrepriseId) entrepriseId = ConitivCRM.addEntreprise({ nom });
+        const actionId = ConitivCRM.addAction({
+          type: 'rdv',
+          sujet: label,
+          entrepriseId,
+          statut: 'a_faire',
+          date: new Date().toISOString().slice(0, 10)
+        });
+        currentCrmActionsCreated[this.id] = actionId;
+        save(true);
+        showToast('Action CRM créée : ' + label);
+      });
     });
   }
 
