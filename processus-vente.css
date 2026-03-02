@@ -19,6 +19,54 @@
   margin: 0 0 1rem;
 }
 
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filters-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.75rem;
+  width: 100%;
+}
+
+.filter-group-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.filter-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.filter-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-check input {
+  margin: 0;
+}
+
 .client-selector-row {
   display: flex;
   flex-wrap: wrap;
@@ -79,7 +127,8 @@
 }
 
 .fiche-field input,
-.fiche-field select {
+.fiche-field select,
+.fiche-field textarea {
   width: 100%;
   padding: 0.5rem 0.75rem;
   font-family: var(--font-sans);
@@ -87,6 +136,91 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background: #fff;
+}
+
+.fiche-field textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Activité & Organisation */
+.contexte-section {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+.contexte-section:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.contexte-section h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--color-text);
+}
+
+.contexte-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.fiche-field--wide {
+  grid-column: 1 / -1;
+}
+
+/* Données quantitatives */
+.metriques-quantitatives {
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(13, 71, 161, 0.04) 0%, rgba(46, 125, 50, 0.04) 100%);
+  border: 1px solid rgba(13, 71, 161, 0.2);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+
+.metriques-quantitatives h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.metriques-intro {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+}
+
+.metriques-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.metrique-field label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.metrique-field input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.metrique-field input:focus {
+  border-color: var(--color-accent);
+  outline: none;
 }
 
 .meddic-status h3 {
@@ -187,6 +321,15 @@
   border-left: 3px solid var(--color-border);
 }
 
+.question-block[data-risque][data-direction] {
+  border-left-color: var(--color-accent);
+  background: rgba(13, 71, 161, 0.03);
+}
+
+.axe-adaptatif h4 {
+  color: var(--color-accent);
+}
+
 .question-text {
   font-size: 0.9375rem;
   font-weight: 500;
@@ -281,6 +424,41 @@
 
 .rdv-calculator-link {
   margin-bottom: 1.5rem;
+}
+
+/* Synthèse client */
+.synthese-section {
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-bottom: 2rem;
+}
+
+.synthese-section h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.synthese-intro {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+}
+
+.synthese-section .fiche-field textarea {
+  min-height: 120px;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.btn-outline:hover {
+  background: rgba(13, 71, 161, 0.08);
 }
 
 /* Règles */
@@ -396,6 +574,9 @@
 
 @media (max-width: 600px) {
   .fiche-grid {
+    grid-template-columns: 1fr;
+  }
+  .metriques-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -17,6 +17,7 @@
       <nav class="nav">
         <a href="index.html">Accueil</a>
         <a href="calculator.html">Calculateur</a>
+        <a href="crm.html">CRM</a>
         <a href="processus-vente.html" class="nav-active">Processus vente</a>
       </nav>
     </div>
@@ -28,9 +29,35 @@
         <h1 class="processus-title">🧠 MEDDIC avancé — Processus de vente</h1>
         <p class="processus-subtitle">Prospection cyber / TPRM / scoring fournisseurs — vente complexe. Structuré par RDV.</p>
 
-        <!-- Sélection client -->
+        <!-- Filtres & Sélection client -->
         <div class="client-selector">
           <h2>👤 Client</h2>
+          <div class="filters-row">
+            <p class="filters-hint">Les filtres et la fiche prospect (Risque, Direction) déterminent les questions affichées.</p>
+            <div class="filter-group">
+              <label class="filter-group-label">Filtrer par risque</label>
+              <div class="filter-checkboxes" id="filterRisqueGroup">
+                <label class="filter-check"><input type="checkbox" name="filterRisque" value="cyber"> 🛡️ Cyber</label>
+                <label class="filter-check"><input type="checkbox" name="filterRisque" value="esg"> 🌍 ESG</label>
+                <label class="filter-check"><input type="checkbox" name="filterRisque" value="rgpd"> 📜 RGPD</label>
+                <label class="filter-check"><input type="checkbox" name="filterRisque" value="defaillance"> 💰 Défaillance</label>
+                <label class="filter-check"><input type="checkbox" name="filterRisque" value="consolide"> 📊 Consolidé</label>
+              </div>
+            </div>
+            <div class="filter-group">
+              <label class="filter-group-label">Filtrer par direction</label>
+              <div class="filter-checkboxes" id="filterDirectionGroup">
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="it"> IT / DSI</label>
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="finance"> Finance</label>
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="achats"> Achats</label>
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="risk"> Risk / Conformité</label>
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="juridique"> Juridique</label>
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="rssi"> RSSI / Cybersécurité</label>
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="direction"> Direction générale</label>
+                <label class="filter-check"><input type="checkbox" name="filterDirection" value="autre"> Autre</label>
+              </div>
+            </div>
+          </div>
           <div class="client-selector-row">
             <div class="fiche-field">
               <label for="clientSelect">Sélectionner un client</label>
@@ -49,6 +76,31 @@
         <div class="fiche-prospect">
           <h2>📋 Fiche prospect</h2>
           <div class="fiche-grid">
+            <div class="fiche-field">
+              <label for="prospectRisque">Risque</label>
+              <select id="prospectRisque">
+                <option value="">-- Choisir --</option>
+                <option value="cyber">🛡️ Cyber</option>
+                <option value="esg">🌍 ESG</option>
+                <option value="rgpd">📜 RGPD</option>
+                <option value="defaillance">💰 Défaillance</option>
+                <option value="consolide">📊 Consolidé</option>
+              </select>
+            </div>
+            <div class="fiche-field">
+              <label for="prospectDirection">Direction</label>
+              <select id="prospectDirection">
+                <option value="">-- Choisir --</option>
+                <option value="it">IT / DSI</option>
+                <option value="finance">Finance</option>
+                <option value="achats">Achats</option>
+                <option value="risk">Risk / Conformité</option>
+                <option value="juridique">Juridique</option>
+                <option value="rssi">RSSI / Cybersécurité</option>
+                <option value="direction">Direction générale</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
             <div class="fiche-field">
               <label for="prospectNom">Prospect / Entreprise</label>
               <input type="text" id="prospectNom" placeholder="Nom de l'entreprise">
@@ -70,6 +122,130 @@
                 <option value="4">RDV 4 — Justification exécutive</option>
                 <option value="5">RDV 5 — Closing</option>
               </select>
+            </div>
+          </div>
+
+          <div class="contexte-section">
+            <h3>🏢 Activité du client</h3>
+            <div class="contexte-grid">
+              <div class="fiche-field">
+                <label for="prospectSecteur">Secteur d'activité</label>
+                <select id="prospectSecteur">
+                  <option value="">-- Choisir --</option>
+                  <option value="finance">Finance / Assurance</option>
+                  <option value="sante">Santé</option>
+                  <option value="industrie">Industrie / Manufacture</option>
+                  <option value="retail">Retail / Distribution</option>
+                  <option value="tech">Tech / Services IT</option>
+                  <option value="energie">Énergie / Utilities</option>
+                  <option value="telecom">Télécoms</option>
+                  <option value="logistique">Logistique / Transport</option>
+                  <option value="services">Services (conseil, juridique, etc.)</option>
+                  <option value="public">Secteur public</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+              <div class="fiche-field">
+                <label for="prospectIndustrie">Industrie / métier (précis)</label>
+                <input type="text" id="prospectIndustrie" placeholder="Ex: assurance dommages, e-commerce B2C">
+              </div>
+              <div class="fiche-field">
+                <label for="prospectModele">Modèle économique</label>
+                <select id="prospectModele">
+                  <option value="">-- Choisir --</option>
+                  <option value="b2b">B2B</option>
+                  <option value="b2c">B2C</option>
+                  <option value="b2b2c">B2B2C</option>
+                  <option value="mixte">Mixte</option>
+                </select>
+              </div>
+              <div class="fiche-field">
+                <label for="prospectPresence">Présence géographique</label>
+                <input type="text" id="prospectPresence" placeholder="Ex: France, UE, international">
+              </div>
+              <div class="fiche-field fiche-field--wide">
+                <label for="prospectEnjeux">Principaux enjeux métier / réglementaires</label>
+                <textarea id="prospectEnjeux" rows="2" placeholder="NIS2, DORA, RGPD, contrats clients, etc."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="contexte-section">
+            <h3>📐 Organisation du client</h3>
+            <div class="contexte-grid">
+              <div class="fiche-field">
+                <label for="prospectStructure">Structure (groupe, filiale, indépendant)</label>
+                <select id="prospectStructure">
+                  <option value="">-- Choisir --</option>
+                  <option value="independant">Indépendant</option>
+                  <option value="filiale">Filiale d'un groupe</option>
+                  <option value="holding">Holding / maison-mère</option>
+                  <option value="joint">Joint-venture</option>
+                </select>
+              </div>
+              <div class="fiche-field">
+                <label for="prospectSiege">Siège / périmètre concerné</label>
+                <input type="text" id="prospectSiege" placeholder="Ex: France uniquement, Europe">
+              </div>
+              <div class="fiche-field fiche-field--wide">
+                <label for="prospectFonctions">Fonctions impliquées sur le risque fournisseur</label>
+                <input type="text" id="prospectFonctions" placeholder="Ex: Achats, IT, RSSI, Risk, Conformité, Juridique">
+              </div>
+              <div class="fiche-field fiche-field--wide">
+                <label for="prospectPilotage">Qui pilote la cartographie / le risque tiers aujourd'hui ?</label>
+                <input type="text" id="prospectPilotage" placeholder="Ex: RSSI, Risk Manager, Achats">
+              </div>
+              <div class="fiche-field fiche-field--wide">
+                <label for="prospectReporting">Reporting actuel (COMEX, CODIR, instances)</label>
+                <textarea id="prospectReporting" rows="2" placeholder="Fréquence, contenu, qui présente..."></textarea>
+              </div>
+              <div class="fiche-field fiche-field--wide">
+                <label for="prospectOutils">Outils actuels (TPRM, GRC, questionnaires, etc.)</label>
+                <input type="text" id="prospectOutils" placeholder="Ex: Excel, outil interne, prestataire">
+              </div>
+            </div>
+          </div>
+
+          <div class="metriques-quantitatives">
+            <h3>📊 Données quantitatives</h3>
+            <p class="metriques-intro">Métriques clés à collecter pour qualifier l'opportunité et alimenter le calculateur ROI.</p>
+            <div class="metriques-grid">
+              <div class="metrique-field">
+                <label for="metriqueCA">CA annuel (M€)</label>
+                <input type="number" id="metriqueCA" min="0" step="0.1" placeholder="Ex: 50">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueEffectif">Effectif</label>
+                <input type="number" id="metriqueEffectif" min="0" placeholder="Ex: 500">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueFournisseursTotal">Nb. fournisseurs tiers (total)</label>
+                <input type="number" id="metriqueFournisseursTotal" min="0" placeholder="Ex: 200">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueFournisseursCritiques">Nb. fournisseurs critiques</label>
+                <input type="number" id="metriqueFournisseursCritiques" min="0" placeholder="Ex: 25">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueBudgetIT">Budget IT / cyber annuel (k€)</label>
+                <input type="number" id="metriqueBudgetIT" min="0" step="10" placeholder="Ex: 500">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueETPRisque">ETP dédiés risque fournisseur</label>
+                <input type="number" id="metriqueETPRisque" min="0" step="0.1" placeholder="Ex: 0.5">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueTauxCouverture">Taux fournisseurs suivis (%)</label>
+                <input type="number" id="metriqueTauxCouverture" min="0" max="100" step="5" placeholder="Ex: 30">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueImpactEstime">Impact incident estimé (k€)</label>
+                <input type="number" id="metriqueImpactEstime" min="0" step="50" placeholder="Ex: 500">
+              </div>
+              <div class="metrique-field">
+                <label for="metriqueBudgetProjet">Budget projet envisagé (k€)</label>
+                <input type="number" id="metriqueBudgetProjet" min="0" step="10" placeholder="Ex: 80">
+              </div>
             </div>
           </div>
           <div class="meddic-status">
@@ -96,6 +272,16 @@
 
           <div class="rdv-axes">
             <div class="axe">
+              <h4>0️⃣ Contexte client (activité & organisation)</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Quelle est votre activité principale et vos principaux clients ?</div><textarea class="question-champ" data-q="1_0a" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Comment est structurée votre organisation (achats, IT, cyber, RSSI, Risk) ?</div><textarea class="question-champ" data-q="1_0b" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qui pilote aujourd'hui la cartographie des tiers et le risque fournisseur ?</div><textarea class="question-champ" data-q="1_0c" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quelles exigences réglementaires ou clients vous poussent sur ce sujet ?</div><textarea class="question-champ" data-q="1_0d" placeholder="NIS2, DORA, RGPD, contrats clients..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quels outils ou processus utilisez-vous actuellement pour la gestion des tiers ?</div><textarea class="question-champ" data-q="1_0e" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
               <h4>1️⃣ Architecture du risque réel</h4>
               <div class="questions-list">
                 <div class="question-block"><div class="question-text">Quels types de tiers pourraient arrêter votre activité demain matin ?</div><textarea class="question-champ" data-q="1_1" placeholder="Réponse du prospect..."></textarea></div>
@@ -115,7 +301,10 @@
             <div class="axe">
               <h4>3️⃣ Pressions externes latentes</h4>
               <div class="questions-list">
-                <div class="question-block"><div class="question-text">Quelles exigences cyber vous sont imposées sans être totalement claires ?</div><textarea class="question-champ" data-q="1_8" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="cyber"><div class="question-text">Quelles exigences cyber vous sont imposées sans être totalement claires ?</div><textarea class="question-champ" data-q="1_8" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="rgpd"><div class="question-text">Quelles exigences RGPD / NIS2 / DORA vous sont imposées par vos clients ou régulateurs ?</div><textarea class="question-champ" data-q="1_8_rgpd" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="esg"><div class="question-text">Quelles exigences ESG (CSRD, chaîne de valeur) vous sont imposées ?</div><textarea class="question-champ" data-q="1_8_esg" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="defaillance"><div class="question-text">Quelles exigences de continuité ou de solvabilité vous sont imposées ?</div><textarea class="question-champ" data-q="1_8_def" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Que vous demanderait un auditeur externe demain ?</div><textarea class="question-champ" data-q="1_9" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Si un incident fournisseur survient, qui devra s'expliquer ?</div><textarea class="question-champ" data-q="1_10" placeholder="Réponse du prospect..."></textarea></div>
               </div>
@@ -131,8 +320,26 @@
             <div class="axe">
               <h4>5️⃣ Premiers signaux process</h4>
               <div class="questions-list">
-                <div class="question-block"><div class="question-text">Comment un sujet cyber devient-il prioritaire chez vous ?</div><textarea class="question-champ" data-q="1_14" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="cyber"><div class="question-text">Comment un sujet cyber devient-il prioritaire chez vous ?</div><textarea class="question-champ" data-q="1_14" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="esg"><div class="question-text">Comment un sujet ESG devient-il prioritaire chez vous ?</div><textarea class="question-champ" data-q="1_14_esg" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="rgpd"><div class="question-text">Comment la conformité RGPD/NIS2 devient-elle prioritaire ?</div><textarea class="question-champ" data-q="1_14_rgpd" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="defaillance"><div class="question-text">Comment la continuité fournisseur devient-elle prioritaire ?</div><textarea class="question-champ" data-q="1_14_def" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Qui est consulté avant même de parler budget ?</div><textarea class="question-champ" data-q="1_15" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe axe-adaptatif">
+              <h4>6️⃣ Questions adaptatives (risque × direction)</h4>
+              <div class="questions-list" id="questionsAdaptatives">
+                <div class="question-block" data-risque="cyber" data-direction="it"><div class="question-text">Quels flux de données transitent via vos fournisseurs IT ? Quels accès ont-ils à vos systèmes ?</div><textarea class="question-champ" data-q="1_adapt_cyber_it" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="cyber" data-direction="rssi"><div class="question-text">Comment évaluez-vous aujourd'hui le niveau de maturité cyber de vos fournisseurs critiques ?</div><textarea class="question-champ" data-q="1_adapt_cyber_rssi" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="cyber" data-direction="finance"><div class="question-text">Quel impact financier un incident cyber fournisseur aurait-il sur vos résultats ?</div><textarea class="question-champ" data-q="1_adapt_cyber_finance" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="cyber" data-direction="achats"><div class="question-text">Comment les achats intègrent-ils le risque cyber dans les critères de sélection fournisseur ?</div><textarea class="question-champ" data-q="1_adapt_cyber_achats" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="esg" data-direction="achats"><div class="question-text">Comment gérez-vous les critères ESG dans votre chaîne d'approvisionnement ?</div><textarea class="question-champ" data-q="1_adapt_esg_achats" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="esg" data-direction="risk"><div class="question-text">Quelles obligations de reporting ESG (CSRD, scope 3) pèsent sur vos fournisseurs ?</div><textarea class="question-champ" data-q="1_adapt_esg_risk" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="rgpd" data-direction="juridique"><div class="question-text">Quels sous-traitants ont accès à des données personnelles ? Comment documentez-vous les DPAs ?</div><textarea class="question-champ" data-q="1_adapt_rgpd_juridique" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="rgpd" data-direction="risk"><div class="question-text">Comment pilotez-vous la conformité NIS2/DORA sur la chaîne fournisseurs ?</div><textarea class="question-champ" data-q="1_adapt_rgpd_risk" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="defaillance" data-direction="finance"><div class="question-text">Quels fournisseurs représentent un risque de défaillance critique pour votre trésorerie ou production ?</div><textarea class="question-champ" data-q="1_adapt_def_finance" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="defaillance" data-direction="achats"><div class="question-text">Comment surveillez-vous la santé financière de vos fournisseurs stratégiques ?</div><textarea class="question-champ" data-q="1_adapt_def_achats" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
           </div>
@@ -177,7 +384,9 @@
               <div class="questions-list">
                 <div class="question-block"><div class="question-text">Comment décidez-vous quel fournisseur auditer en premier ?</div><textarea class="question-champ" data-q="2_4" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Que se passe-t-il si deux risques critiques émergent simultanément ?</div><textarea class="question-champ" data-q="2_5" placeholder="Réponse du prospect..."></textarea></div>
-                <div class="question-block"><div class="question-text">Qui tranche quand le risque cyber entre en conflit avec les achats ?</div><textarea class="question-champ" data-q="2_6" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="cyber"><div class="question-text">Qui tranche quand le risque cyber entre en conflit avec les achats ?</div><textarea class="question-champ" data-q="2_6" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="esg"><div class="question-text">Qui tranche quand les critères ESG entrent en conflit avec les achats ?</div><textarea class="question-champ" data-q="2_6_esg" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="defaillance"><div class="question-text">Qui tranche quand le risque fournisseur entre en conflit avec les achats ?</div><textarea class="question-champ" data-q="2_6_def" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
             <div class="axe">
@@ -193,7 +402,9 @@
               <div class="questions-list">
                 <div class="question-block"><div class="question-text">Qui peut bloquer ce type de projet sans être décideur ?</div><textarea class="question-champ" data-q="2_10" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">À quel moment les achats reprennent la main ?</div><textarea class="question-champ" data-q="2_11" placeholder="Réponse du prospect..."></textarea></div>
-                <div class="question-block"><div class="question-text">Qu'est-ce qui fait dérailler un projet cyber chez vous ?</div><textarea class="question-champ" data-q="2_12" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="cyber"><div class="question-text">Qu'est-ce qui fait dérailler un projet cyber chez vous ?</div><textarea class="question-champ" data-q="2_12" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="esg"><div class="question-text">Qu'est-ce qui fait dérailler un projet ESG chez vous ?</div><textarea class="question-champ" data-q="2_12_esg" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block" data-risque="rgpd"><div class="question-text">Qu'est-ce qui fait dérailler un projet conformité RGPD/NIS2 chez vous ?</div><textarea class="question-champ" data-q="2_12_rgpd" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
             <div class="axe">
@@ -341,6 +552,16 @@
           </div>
         </div>
 
+        <!-- Synthèse client & actions communes -->
+        <div class="synthese-section">
+          <h2>📄 Synthèse client — à partager</h2>
+          <p class="synthese-intro">Rédigez les actions communes pour avancer ensemble. Cette synthèse sera incluse dans le document téléchargeable.</p>
+          <div class="fiche-field">
+            <label for="actionsCommunes">Actions communes / Prochaines étapes</label>
+            <textarea id="actionsCommunes" rows="6" placeholder="Ex:&#10;• Fournir la liste des fournisseurs critiques d'ici le 15/03&#10;• Organiser une démo avec le RSSI et les Achats&#10;• Valider le périmètre NIS2 avec la conformité&#10;• RDV de suivi prévu le 20/03"></textarea>
+          </div>
+        </div>
+
         <!-- Règles MEDDIC -->
         <div class="regles-section">
           <h2>🧠 Règles avancées MEDDIC cyber</h2>
@@ -356,6 +577,7 @@
         <!-- Actions -->
         <div class="processus-actions">
           <button type="button" class="btn btn-primary" id="btnSave">Enregistrer la fiche</button>
+          <button type="button" class="btn btn-primary btn-outline" id="btnDownloadSynthese">📥 Télécharger la synthèse client</button>
           <button type="button" class="btn btn-secondary" id="btnReset">Réinitialiser</button>
         </div>
       </div>
