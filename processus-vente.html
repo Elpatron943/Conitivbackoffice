@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Processus de vente MEDDIC | Conitiv — TPRM / Scoring fournisseurs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="processus-vente.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container container--wide">
+      <a href="index.html" class="logo">Conitiv</a>
+      <nav class="nav">
+        <a href="index.html">Accueil</a>
+        <a href="calculator.html">Calculateur</a>
+        <a href="processus-vente.html" class="nav-active">Processus vente</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="processus-main">
+    <section class="section">
+      <div class="container container--wide">
+        <h1 class="processus-title">🧠 MEDDIC avancé — Processus de vente</h1>
+        <p class="processus-subtitle">Prospection cyber / TPRM / scoring fournisseurs — vente complexe. Structuré par RDV.</p>
+
+        <!-- Sélection client -->
+        <div class="client-selector">
+          <h2>👤 Client</h2>
+          <div class="client-selector-row">
+            <div class="fiche-field">
+              <label for="clientSelect">Sélectionner un client</label>
+              <select id="clientSelect">
+                <option value="">-- Choisir ou créer --</option>
+              </select>
+            </div>
+            <div class="client-actions">
+              <button type="button" class="btn btn-primary btn--small" id="btnNewClient">+ Nouveau client</button>
+              <button type="button" class="btn btn-secondary btn--small" id="btnDeleteClient">Supprimer</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fiche prospect -->
+        <div class="fiche-prospect">
+          <h2>📋 Fiche prospect</h2>
+          <div class="fiche-grid">
+            <div class="fiche-field">
+              <label for="prospectNom">Prospect / Entreprise</label>
+              <input type="text" id="prospectNom" placeholder="Nom de l'entreprise">
+            </div>
+            <div class="fiche-field">
+              <label for="prospectContact">Contact principal</label>
+              <input type="text" id="prospectContact" placeholder="Nom, rôle">
+            </div>
+            <div class="fiche-field">
+              <label for="prospectDate">Date dernier RDV</label>
+              <input type="date" id="prospectDate">
+            </div>
+            <div class="fiche-field">
+              <label for="prospectRdv">RDV actuel</label>
+              <select id="prospectRdv">
+                <option value="1">RDV 1 — Exploration</option>
+                <option value="2">RDV 2 — Déconstruction</option>
+                <option value="3">RDV 3 — Pouvoir & budget</option>
+                <option value="4">RDV 4 — Justification exécutive</option>
+                <option value="5">RDV 5 — Closing</option>
+              </select>
+            </div>
+          </div>
+          <div class="meddic-status">
+            <h3>Statut MEDDIC</h3>
+            <div class="meddic-checkboxes">
+              <label><input type="checkbox" id="meddicM"> <strong>M</strong>etrics</label>
+              <label><input type="checkbox" id="meddicE"> <strong>E</strong>conomic Buyer</label>
+              <label><input type="checkbox" id="meddicD1"> <strong>D</strong>ecision Criteria</label>
+              <label><input type="checkbox" id="meddicD2"> <strong>D</strong>ecision Process</label>
+              <label><input type="checkbox" id="meddicI"> <strong>I</strong>dentify Pain</label>
+              <label><input type="checkbox" id="meddicC"> <strong>C</strong>hampion</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- RDV 1 -->
+        <div class="rdv-section rdv-section--1" id="rdv1">
+          <div class="rdv-header">
+            <span class="rdv-badge rdv-badge--1">RDV 1</span>
+            <h2>Exploration stratégique du risque (diagnostic)</h2>
+            <p class="rdv-objectif"><strong>🎯 Objectif :</strong> faire émerger une douleur stratégique, pas opérationnelle</p>
+            <p class="rdv-meddic">MEDDIC : I + M (qualitatif) + D (signaux)</p>
+          </div>
+
+          <div class="rdv-axes">
+            <div class="axe">
+              <h4>1️⃣ Architecture du risque réel</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Quels types de tiers pourraient arrêter votre activité demain matin ?</div><textarea class="question-champ" data-q="1_1" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quels fournisseurs seraient impossibles à remplacer sous 30 jours ?</div><textarea class="question-champ" data-q="1_2" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quels tiers ont à la fois accès à vos données et à vos opérations ?</div><textarea class="question-champ" data-q="1_3" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Dans votre cartographie actuelle, qu'est-ce qui est factuel vs supposé ?</div><textarea class="question-champ" data-q="1_4" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>2️⃣ Angles morts & faux sentiment de contrôle</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Sur quels fournisseurs êtes-vous « confiant » sans preuve objective ?</div><textarea class="question-champ" data-q="1_5" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quand avez-vous découvert pour la dernière fois un risque fournisseur trop tard ?</div><textarea class="question-champ" data-q="1_6" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quels tiers n'apparaissent jamais dans vos reportings actuels ?</div><textarea class="question-champ" data-q="1_7" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>3️⃣ Pressions externes latentes</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Quelles exigences cyber vous sont imposées sans être totalement claires ?</div><textarea class="question-champ" data-q="1_8" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Que vous demanderait un auditeur externe demain ?</div><textarea class="question-champ" data-q="1_9" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Si un incident fournisseur survient, qui devra s'expliquer ?</div><textarea class="question-champ" data-q="1_10" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>4️⃣ Metrics implicites (sans chiffres précis)</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Quel serait l'impact réel d'un incident fournisseur sur vos clients clés ?</div><textarea class="question-champ" data-q="1_11" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quelle serait la conséquence la plus coûteuse : arrêt, image ou perte de contrat ?</div><textarea class="question-champ" data-q="1_12" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">À partir de quel niveau de risque votre direction réagit ?</div><textarea class="question-champ" data-q="1_13" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>5️⃣ Premiers signaux process</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Comment un sujet cyber devient-il prioritaire chez vous ?</div><textarea class="question-champ" data-q="1_14" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qui est consulté avant même de parler budget ?</div><textarea class="question-champ" data-q="1_15" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="rdv-notes">
+            <label>Notes / Réponses</label>
+            <textarea id="notesRdv1" rows="4" placeholder="Saisissez les réponses du prospect, les points clés, les signaux..."></textarea>
+          </div>
+          <div class="rdv-lecture">
+            <h4>🔎 Lecture vendeur</h4>
+            <div class="lecture-check">
+              <label><input type="radio" name="lecture1" value="eleve"> S'il parle stratégie → potentiel élevé</label>
+              <label><input type="radio" name="lecture1" value="tot"> S'il parle outils → trop tôt</label>
+              <label><input type="radio" name="lecture1" value="stop"> S'il parle aucune douleur → stop</label>
+            </div>
+          </div>
+          <div class="rdv-sortie">
+            <h4>✅ Sortie RDV 1</h4>
+            <label class="sortie-item"><input type="checkbox" id="sortie1a"> Hypothèse claire de douleur + sponsor potentiel</label>
+            <label class="sortie-item"><input type="checkbox" id="sortie1b"> Accord pour approfondir</label>
+          </div>
+        </div>
+
+        <!-- RDV 2 -->
+        <div class="rdv-section rdv-section--2" id="rdv2">
+          <div class="rdv-header">
+            <span class="rdv-badge rdv-badge--2">RDV 2</span>
+            <h2>Déconstruction du système existant</h2>
+            <p class="rdv-objectif"><strong>🎯 Objectif :</strong> montrer que l'existant ne suffit plus</p>
+            <p class="rdv-meddic">MEDDIC : M (quantifié), DC, D</p>
+          </div>
+          <div class="rdv-axes">
+            <div class="axe">
+              <h4>1️⃣ Efficacité réelle des méthodes actuelles</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Qu'est-ce que vos outils actuels ne savent pas vous dire ?</div><textarea class="question-champ" data-q="2_1" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quelles décisions sont aujourd'hui prises sans données fiables ?</div><textarea class="question-champ" data-q="2_2" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quel est le taux de fournisseurs réellement suivis dans le temps ?</div><textarea class="question-champ" data-q="2_3" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>2️⃣ Arbitrages et priorisation</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Comment décidez-vous quel fournisseur auditer en premier ?</div><textarea class="question-champ" data-q="2_4" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Que se passe-t-il si deux risques critiques émergent simultanément ?</div><textarea class="question-champ" data-q="2_5" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qui tranche quand le risque cyber entre en conflit avec les achats ?</div><textarea class="question-champ" data-q="2_6" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>3️⃣ Decision Criteria non-dits</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Qu'est-ce qui ferait rejeter une solution même techniquement excellente ?</div><textarea class="question-champ" data-q="2_7" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quelles erreurs passées ont rendu la direction méfiante ?</div><textarea class="question-champ" data-q="2_8" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">À quoi votre direction est-elle allergique ?</div><textarea class="question-champ" data-q="2_9" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>4️⃣ Processus réel (vs officiel)</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Qui peut bloquer ce type de projet sans être décideur ?</div><textarea class="question-champ" data-q="2_10" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">À quel moment les achats reprennent la main ?</div><textarea class="question-champ" data-q="2_11" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qu'est-ce qui fait dérailler un projet cyber chez vous ?</div><textarea class="question-champ" data-q="2_12" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>5️⃣ Chiffrage indirect</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Combien d'ETP sont mobilisés aujourd'hui pour gérer ce risque ?</div><textarea class="question-champ" data-q="2_13" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quel est le coût d'un faux positif ou d'un risque sous-estimé ?</div><textarea class="question-champ" data-q="2_14" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="rdv-notes">
+            <label>Notes / Réponses</label>
+            <textarea id="notesRdv2" rows="4" placeholder="Saisissez les réponses du prospect..."></textarea>
+          </div>
+          <div class="rdv-lecture">
+            <h4>🔎 Lecture vendeur</h4>
+            <div class="lecture-check">
+              <label><input type="radio" name="lecture2" value="reel"> Process clair → deal réel</label>
+              <label><input type="radio" name="lecture2" value="politique"> Process flou → deal politique</label>
+              <label><input type="radio" name="lecture2" value="danger"> Process nié → danger</label>
+            </div>
+          </div>
+          <div class="rdv-sortie">
+            <h4>✅ Sortie RDV 2</h4>
+            <label class="sortie-item"><input type="checkbox" id="sortie2a"> Critères explicites</label>
+            <label class="sortie-item"><input type="checkbox" id="sortie2b"> Process réel compris</label>
+            <label class="sortie-item"><input type="checkbox" id="sortie2c"> Décideurs identifiés</label>
+          </div>
+        </div>
+
+        <!-- RDV 3 -->
+        <div class="rdv-section rdv-section--3" id="rdv3">
+          <div class="rdv-header">
+            <span class="rdv-badge rdv-badge--3">RDV 3</span>
+            <h2>Pouvoir, budget et politique interne</h2>
+            <p class="rdv-objectif"><strong>🎯 Objectif :</strong> valider qui décide vraiment et pourquoi</p>
+            <p class="rdv-meddic">MEDDIC : E + C</p>
+          </div>
+          <div class="rdv-axes">
+            <div class="axe">
+              <h4>1️⃣ Budget & arbitrage</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Qui perd quelque chose si ce projet n'aboutit pas ?</div><textarea class="question-champ" data-q="3_1" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quel budget serait coupé pour financer celui-ci ?</div><textarea class="question-champ" data-q="3_2" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quelle crise déclencherait un budget immédiat ?</div><textarea class="question-champ" data-q="3_3" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>2️⃣ Acheteur économique réel</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Qui signerait si un incident survenait demain ?</div><textarea class="question-champ" data-q="3_4" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qui serait convoqué par le COMEX ?</div><textarea class="question-champ" data-q="3_5" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qui peut dire « oui » sans justification supplémentaire ?</div><textarea class="question-champ" data-q="3_6" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>3️⃣ Champion réel vs sponsor passif</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Que risquez-vous personnellement si rien ne change ?</div><textarea class="question-champ" data-q="3_7" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Seriez-vous prêt à défendre ce projet sans moi en comité ?</div><textarea class="question-champ" data-q="3_8" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quelles objections internes devrai-je vous aider à traiter ?</div><textarea class="question-champ" data-q="3_9" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+            <div class="axe">
+              <h4>4️⃣ Cartographie politique</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Qui est historiquement opposé à ce type de projet ?</div><textarea class="question-champ" data-q="3_10" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qui pourrait récupérer le projet à son compte ?</div><textarea class="question-champ" data-q="3_11" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Qui doit absolument être rassuré ?</div><textarea class="question-champ" data-q="3_12" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="rdv-notes">
+            <label>Notes / Réponses</label>
+            <textarea id="notesRdv3" rows="4" placeholder="Saisissez les réponses du prospect..."></textarea>
+          </div>
+          <div class="rdv-lecture">
+            <h4>🔎 Lecture vendeur</h4>
+            <div class="lecture-check">
+              <label><input type="radio" name="lecture3" value="bon"> Champion exposé → très bon signe</label>
+              <label><input type="radio" name="lecture3" value="renforcer"> Champion prudent → à renforcer</label>
+              <label><input type="radio" name="lecture3" value="stop"> Champion absent → stop</label>
+            </div>
+          </div>
+          <div class="rdv-sortie">
+            <h4>✅ Sortie RDV 3</h4>
+            <label class="sortie-item"><input type="checkbox" id="sortie3a"> Champion actif</label>
+            <label class="sortie-item"><input type="checkbox" id="sortie3b"> Accès au décideur</label>
+            <label class="sortie-item"><input type="checkbox" id="sortie3c"> Feuille de route politique</label>
+          </div>
+        </div>
+
+        <!-- RDV 4 -->
+        <div class="rdv-section rdv-section--4" id="rdv4">
+          <div class="rdv-header">
+            <span class="rdv-badge rdv-badge--4">RDV 4</span>
+            <h2>Justification exécutive & ROI défensif</h2>
+            <p class="rdv-objectif"><strong>🎯 Objectif :</strong> sécuriser la décision par le risque évité</p>
+            <p class="rdv-meddic">MEDDIC : M + E + DC</p>
+          </div>
+          <div class="rdv-axes">
+            <div class="axe">
+              <h4>Questions exécutives</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Quel risque la direction est-elle prête à accepter… et lequel non ?</div><textarea class="question-champ" data-q="4_1" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quel scénario ferait regretter de ne pas avoir agi ?</div><textarea class="question-champ" data-q="4_2" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">Quelle preuve devra être présentée en cas de contrôle ?</div><textarea class="question-champ" data-q="4_3" placeholder="Réponse du prospect..."></textarea></div>
+                <div class="question-block"><div class="question-text">À partir de quand ce projet devient-il rentable, même sans incident ?</div><textarea class="question-champ" data-q="4_4" placeholder="Réponse du prospect..."></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="rdv-notes">
+            <label>Notes / Réponses</label>
+            <textarea id="notesRdv4" rows="4" placeholder="Saisissez les réponses du prospect..."></textarea>
+          </div>
+          <div class="rdv-calculator-link">
+            <a href="calculator.html" class="btn btn-primary">📊 Calculer le ROI avec le prospect</a>
+          </div>
+          <div class="rdv-sortie">
+            <h4>✅ Sortie RDV 4</h4>
+            <label class="sortie-item"><input type="checkbox" id="sortie4a"> Accord de principe</label>
+            <label class="sortie-item"><input type="checkbox" id="sortie4b"> Lancement achats / juridique</label>
+          </div>
+        </div>
+
+        <!-- RDV 5 -->
+        <div class="rdv-section rdv-section--5" id="rdv5">
+          <div class="rdv-header">
+            <span class="rdv-badge rdv-badge--5">RDV 5</span>
+            <h2>Closing politique (si nécessaire)</h2>
+          </div>
+          <div class="rdv-axes">
+            <div class="axe">
+              <h4>Points clés</h4>
+              <div class="questions-list">
+                <div class="question-block"><div class="question-text">Arbitrage final</div><textarea class="question-champ" data-q="5_1" placeholder="Notes..."></textarea></div>
+                <div class="question-block"><div class="question-text">Réassurance personnelle</div><textarea class="question-champ" data-q="5_2" placeholder="Notes..."></textarea></div>
+                <div class="question-block"><div class="question-text">Décision formelle</div><textarea class="question-champ" data-q="5_3" placeholder="Notes..."></textarea></div>
+              </div>
+            </div>
+          </div>
+          <div class="rdv-notes">
+            <label>Notes / Réponses</label>
+            <textarea id="notesRdv5" rows="4" placeholder="Saisissez les réponses du prospect..."></textarea>
+          </div>
+        </div>
+
+        <!-- Règles MEDDIC -->
+        <div class="regles-section">
+          <h2>🧠 Règles avancées MEDDIC cyber</h2>
+          <ul class="regles-list">
+            <li><label><input type="checkbox" id="regle1"> Plus le prospect parle → plus tu creuses</label></li>
+            <li><label><input type="checkbox" id="regle2"> Ne jamais corriger → faire constater</label></li>
+            <li><label><input type="checkbox" id="regle3"> Ne jamais vendre le produit avant RDV 3</label></li>
+            <li><label><input type="checkbox" id="regle4"> Toujours reformuler en risque + impact</label></li>
+            <li><label><input type="checkbox" id="regle5"> Si une zone reste floue → elle bloquera le deal</label></li>
+          </ul>
+        </div>
+
+        <!-- Actions -->
+        <div class="processus-actions">
+          <button type="button" class="btn btn-primary" id="btnSave">Enregistrer la fiche</button>
+          <button type="button" class="btn btn-secondary" id="btnReset">Réinitialiser</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container container--wide">
+      <p>© Conitiv — Risk management tiers</p>
+    </div>
+  </footer>
+
+  <!-- Modal in-app -->
+  <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 class="modal-title" id="modalTitle">Titre</h3>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <script src="processus-vente.js"></script>
+</body>
+</html>
