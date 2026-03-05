@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personnaliser les questions | Processus de vente | Conitiv</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="processus-vente.css">
+  <style>
+    .editor-section { max-width: 900px; margin: 0 auto 2rem; }
+    .editor-section h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+    .rdv-editor { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem; }
+    .rdv-editor h2 { display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem; margin: 0 0 0.75rem; }
+    .rdv-editor h2 input { flex: 1; padding: 0.35rem 0.5rem; font-size: 0.95rem; }
+    .axe-editor { background: #f8f9fa; border: 1px solid var(--color-border); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.75rem; }
+    .axe-editor h3 { font-size: 1rem; margin: 0 0 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .axe-editor h3 input { flex: 1; padding: 0.35rem 0.5rem; font-size: 0.9375rem; }
+    .axe-editor .btn-remove-axe, .axe-editor .btn-move-axe { flex-shrink: 0; padding: 0.35rem 0.5rem; font-size: 0.75rem; }
+    .question-row { display: flex; gap: 0.5rem; align-items: flex-start; margin-bottom: 0.5rem; }
+    .question-row input[type="text"], .question-row textarea { flex: 1; padding: 0.4rem 0.5rem; font-size: 0.875rem; }
+    .question-row textarea { min-height: 2.5rem; resize: vertical; }
+    .question-row select { width: 110px; padding: 0.4rem; font-size: 0.875rem; }
+    .question-row .btn-row { display: flex; gap: 0.25rem; }
+    .question-row .btn-row button { padding: 0.35rem 0.5rem; font-size: 0.75rem; }
+    .question-row .q-id-badge { font-size: 0.7rem; font-family: monospace; background: #e3f2fd; color: #1565c0; padding: 0.25rem 0.4rem; border-radius: 4px; white-space: nowrap; flex-shrink: 0; min-width: 4em; }
+    .question-row .q-id-badge .q-id-sub { font-size: 0.65rem; color: #666; font-weight: normal; }
+    .question-row .q-options-wrap { display: none; min-width: 140px; }
+    .question-row.question-row--checkbox .q-options-wrap { display: block; }
+    .question-row .q-options { width: 100%; min-height: 2rem; font-size: 0.8rem; padding: 0.35rem; resize: vertical; }
+    .question-row .q-visibility { width: 100%; display: grid; gap: 0.5rem; font-size: 0.8rem; margin-top: 0.25rem; padding: 0.5rem; background: rgba(0,0,0,0.04); border-radius: 4px; }
+    .question-row .q-visibility label { font-weight: 500; color: #555; }
+    .question-row .q-dirs { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; }
+    .question-row .q-dirs .q-dir-wrap { display: inline-flex; align-items: center; gap: 0.25rem; }
+    .question-row .q-show-when-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: flex-start; }
+    .question-row .q-show-when-row input, .question-row .q-show-when-row textarea { font-size: 0.8rem; padding: 0.3rem; }
+    .question-row .q-show-when-opts { min-width: 160px; min-height: 1.8rem; resize: vertical; }
+    .editor-actions { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+    .editor-actions .btn { padding: 0.5rem 1rem; }
+    .empty-state { padding: 2rem; text-align: center; background: #f0f4f8; border-radius: var(--radius); color: #555; }
+    .empty-state a { color: var(--color-accent); }
+    .add-question-btn { margin-top: 0.5rem; font-size: 0.875rem; }
+    .badge-rdv { background: #0d47a1; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; }
+    .question-row.question-row--depth-1 { margin-left: 1.25rem; border-left: 3px solid var(--color-accent); padding-left: 0.5rem; }
+    .question-row.question-row--depth-2 { margin-left: 2.5rem; border-left: 3px solid rgba(13, 71, 161, 0.6); padding-left: 0.5rem; }
+    .question-row.question-row--depth-3,
+    .question-row.question-row--depth-4,
+    .question-row.question-row--depth-5 { margin-left: 3.75rem; border-left: 3px solid rgba(13, 71, 161, 0.45); padding-left: 0.5rem; }
+    .question-row[class*="question-row--depth-"] { background: rgba(13, 71, 161, 0.04); border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container container--wide">
+      <a href="index.html" class="logo">Conitiv</a>
+      <nav class="nav">
+        <a href="index.html">Accueil</a>
+        <a href="calculator.html">Calculateur</a>
+        <a href="crm.html">CRM</a>
+        <a href="processus-vente.html">Processus vente</a>
+        <a href="audit.html">Audit</a>
+        <a href="processus-vente-questions.html" class="nav-active">Personnaliser les questions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="processus-main">
+    <section class="section">
+      <div class="container container--wide">
+        <h1 class="processus-title">✏️ Personnaliser les questions du processus</h1>
+        <p class="processus-subtitle">Modifiez les questions, l'ordre et la forme des réponses (texte court ou zone de texte). Les changements sont enregistrés localement et appliqués sur la page Processus de vente.</p>
+
+        <div class="editor-section" id="editorSection">
+          <div id="editorContent"></div>
+          <div class="editor-actions" id="editorActions" style="display: none;">
+            <button type="button" class="btn btn-primary" id="btnSaveConfig">Enregistrer et retour au processus</button>
+            <button type="button" class="btn btn-secondary" id="btnExportJson">Exporter en JSON</button>
+            <label class="btn btn-secondary" style="margin: 0;">Importer un JSON <input type="file" id="inputImportJson" accept=".json" style="display: none;"></label>
+            <button type="button" class="btn btn-secondary" id="btnResetConfig">Réinitialiser (configuration d’origine)</button>
+          </div>
+        </div>
+
+        <div class="editor-section" id="emptyState">
+          <div class="empty-state">
+            <p><strong>Aucune configuration enregistrée.</strong></p>
+            <p>Charger la configuration actuelle (page Processus de vente) ou créer un premier RDV, puis ajoutez des axes directement dedans avec « + Ajouter un groupe (axe) ».</p>
+            <p style="margin-top: 1rem;">
+              <a href="processus-vente.html?capture=1" class="btn btn-primary" id="btnLoadFromProcess">Charger la configuration depuis la page Processus de vente</a>
+              <button type="button" class="btn btn-secondary" id="btnCreateFirstRdv" style="margin-left: 0.5rem;">Créer un premier RDV</button>
+            </p>
+            <p style="margin-top: 0.75rem; font-size: 0.9rem;">Chargement : vous serez redirigé vers Processus de vente puis renvoyé ici. Création : un bloc RDV apparaît ; cliquez sur « + Ajouter un groupe (axe) » dans ce bloc pour créer un axe.</p>
+          </div>
+        </div>
+        <div class="editor-section" id="addRdvSection" style="display: none;">
+          <button type="button" class="btn btn-secondary" id="btnAddRdv">+ Ajouter un RDV</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+(function () {
+  const CONFIG_KEY = 'conitiv_processus_questions_config';
+  const DIRECTION_OPTS = [
+    { value: 'it', label: 'IT' },
+    { value: 'finance', label: 'Finance' },
+    { value: 'achats', label: 'Achats' },
+    { value: 'risk', label: 'Risk' },
+    { value: 'juridique', label: 'Juridique' },
+    { value: 'rssi', label: 'RSSI' },
+    { value: 'direction', label: 'Dir.' },
+    { value: 'autre', label: 'Autre' }
+  ];
+
+  function getConfig() {
+    try {
+      const raw = localStorage.getItem(CONFIG_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setConfig(config) {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  }
+
+  function normalizeConfig(config) {
+    if (!config) return null;
+    if (!config.rdvs) {
+      const rdvNums = Array.from(new Set((config.axes || []).map(a => String(a.rdv)))).sort();
+      config.rdvs = rdvNums.map(n => ({ rdv: n, title: 'RDV ' + n }));
+    }
+    config.version = config.version || 2;
+    ensureUniqueIdsInConfig(config);
+    (config.axes || []).forEach((axis) => {
+      (axis.questions || []).forEach((q) => {
+        if (q.text) q.text = stripLeadingNumberPrefix(q.text);
+      });
+    });
+    return config;
+  }
+
+  /** Garantit que chaque question a un id unique dans son axe (évite doublons après import ou bug). */
+  function ensureUniqueIdsInConfig(config) {
+    (config.axes || []).forEach((axis) => {
+      const used = new Set();
+      const rdv = String(axis.rdv);
+      const axe = String(axis.axe);
+      (axis.questions || []).forEach((q) => {
+        let id = (q.id || '').trim();
+        if (!id || used.has(id)) {
+          let k = 0;
+          while (used.has(rdv + '_' + axe + '_' + k)) k++;
+          id = rdv + '_' + axe + '_' + k;
+        }
+        used.add(id);
+        q.id = id;
+      });
+    });
+  }
+
+  /** Supprime en début de texte les préfixes numériques (ex: "5.1 5.1.1 6 6 "). */
+  function stripLeadingNumberPrefix(text) {
+    if (typeof text !== 'string') return text;
+    return text.replace(/^([\d.]+\s+)+/, '').trim();
+  }
+
+  /** Calcule la nomenclature hiérarchique (1, 1.2, 1.2.1...) selon l'ordre et les dépendances "Afficher si". */
+  function computeNomenclature(config) {
+    const nomenclatures = {};
+    const childCount = {};
+    let topLevelIndex = 0;
+    const byRdv = new Map();
+    (config.axes || []).forEach(axis => {
+      const r = String(axis.rdv);
+      if (!byRdv.has(r)) byRdv.set(r, []);
+      byRdv.get(r).push(axis);
+    });
+    const ordered = [];
+    (config.rdvs || []).forEach(r => {
+      const rdv = String(r.rdv);
+      (byRdv.get(rdv) || []).forEach(axis => {
+        (axis.questions || []).forEach(q => {
+          const id = q.id || axis.rdv + '_' + axis.axe + '_' + ordered.length;
+          const parentId = (q.showWhen && q.showWhen.questionId) ? String(q.showWhen.questionId) : null;
+          ordered.push({ id, parentId });
+        });
+      });
+    });
+    ordered.forEach(q => {
+      if (!q.parentId) {
+        topLevelIndex += 1;
+        nomenclatures[q.id] = String(topLevelIndex);
+      } else {
+        const parentNum = nomenclatures[q.parentId];
+        if (parentNum == null) {
+          nomenclatures[q.id] = '?';
+          return;
+        }
+        childCount[q.parentId] = (childCount[q.parentId] || 0) + 1;
+        const siblingIndex = childCount[q.parentId];
+        nomenclatures[q.id] = parentNum + '.' + siblingIndex;
+      }
+    });
+    return nomenclatures;
+  }
+
+  function renderEditor(config) {
+    const container = document.getElementById('editorContent');
+    container.innerHTML = '';
+    const nomenclatures = computeNomenclature(config);
+    const byRdv = new Map();
+    (config.axes || []).forEach(axis => {
+      const r = String(axis.rdv);
+      if (!byRdv.has(r)) byRdv.set(r, []);
+      byRdv.get(r).push(axis);
+    });
+
+    (config.rdvs || []).forEach(r => {
+      const rdv = String(r.rdv);
+      const rdvWrap = document.createElement('div');
+      rdvWrap.className = 'rdv-editor';
+      rdvWrap.dataset.rdv = rdv;
+
+      const titleVal = (r.title || '').replace(/"/g, '&quot;');
+      rdvWrap.innerHTML = '<h2><span class="badge-rdv">RDV ' + rdv + '</span><input type="text" class="rdv-title" value="' + titleVal + '" placeholder="Libellé du RDV"></h2><div class="rdv-axes-editor"></div><button type="button" class="btn btn-secondary add-axe-btn">+ Ajouter un groupe (axe)</button>';
+      container.appendChild(rdvWrap);
+
+      rdvWrap.querySelector('.rdv-title').addEventListener('change', collectAndSave);
+      rdvWrap.querySelector('.add-axe-btn').addEventListener('click', () => addAxe(rdvWrap));
+
+      const axesContainer = rdvWrap.querySelector('.rdv-axes-editor');
+      (byRdv.get(rdv) || []).forEach((axis, axIdx) => {
+        const axeDiv = document.createElement('div');
+        axeDiv.className = 'axe-editor';
+        axeDiv.dataset.rdv = axis.rdv;
+        axeDiv.dataset.axe = axis.axe;
+        let html = '<h3><span class="badge-rdv">Axe</span> <input type="text" class="axe-title" value="' + (axis.title || '').replace(/"/g, '&quot;') + '" placeholder="Titre du groupe"><button type="button" class="btn btn-secondary btn-move-axe" data-delta="-1" title="Monter l\'axe">↑</button><button type="button" class="btn btn-secondary btn-move-axe" data-delta="1" title="Descendre l\'axe">↓</button><button type="button" class="btn btn-secondary btn-remove-axe" title="Supprimer ce groupe">✕ Supprimer l\'axe</button></h3>';
+        (axis.questions || []).forEach((q, qIdx) => {
+        const textEsc = (q.text || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        const phEsc = (q.placeholder || '').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        const optsEsc = (Array.isArray(q.options) ? q.options.join('\n') : (q.options || '')).replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        const rowClass = 'question-row' + (q.type === 'checkbox' ? ' question-row--checkbox' : '');
+        const qId = q.id || axis.rdv + '_' + axis.axe + '_' + qIdx;
+        const idEsc = qId.replace(/"/g, '&quot;');
+        const idDisplay = qId.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+        const num = nomenclatures[qId];
+        const depth = num ? (num.split('.').length - 1) : 0;
+        const depthClass = ' question-row--depth-' + depth;
+        const badgeText = num ? (num + ' <span class="q-id-sub">(' + idDisplay + ')</span>') : idDisplay;
+        html += '<div class="' + rowClass + depthClass + '" data-qidx="' + qIdx + '" data-depth="' + depth + '">';
+        html += '<span class="q-id-badge q-nomenclature" title="Nomenclature (ordre d\'affichage). Id entre parenthèses pour « Afficher si… »">' + badgeText + '</span>';
+        html += '<input type="hidden" class="q-id" value="' + idEsc + '">';
+        html += '<input type="text" class="q-text" value="' + textEsc + '" placeholder="Texte de la question" title="Texte de la question">';
+        html += '<select class="q-type"><option value="textarea"' + (q.type === 'textarea' ? ' selected' : '') + '>Zone de texte</option><option value="text"' + (q.type === 'text' ? ' selected' : '') + '>Texte court</option><option value="number"' + (q.type === 'number' ? ' selected' : '') + '>Nombre</option><option value="checkbox"' + (q.type === 'checkbox' ? ' selected' : '') + '>Case à cocher</option></select>';
+        html += '<div class="q-options-wrap"><textarea class="q-options" placeholder="Une option par ligne" title="Options (une par ligne)">' + optsEsc + '</textarea></div>';
+        html += '<input type="text" class="q-placeholder" value="' + phEsc + '" placeholder="Placeholder" style="max-width:140px">';
+        html += '<div class="btn-row"><button type="button" class="btn btn-secondary btn-move-up" title="Monter">↑</button><button type="button" class="btn btn-secondary btn-move-down" title="Descendre">↓</button><button type="button" class="btn btn-secondary btn-remove" title="Supprimer">✕</button></div>';
+        const dirs = Array.isArray(q.directions) ? q.directions : (q.direction ? [q.direction] : []);
+        const showWhenId = (q.showWhen && q.showWhen.questionId) ? String(q.showWhen.questionId).replace(/"/g, '&quot;') : '';
+        const showWhenOpts = (q.showWhen && q.showWhen.options && q.showWhen.options.length) ? q.showWhen.options.join('\n').replace(/</g, '&lt;').replace(/"/g, '&quot;') : '';
+        html += '<div class="q-visibility"><label>Directions (vide = toutes)</label><div class="q-dirs">';
+        DIRECTION_OPTS.forEach(function(d) { html += '<label class="q-dir-wrap"><input type="checkbox" class="q-dir" value="' + d.value + '"' + (dirs.indexOf(d.value) !== -1 ? ' checked' : '') + '>' + d.label + '</label>'; });
+        html += '</div><label>Afficher si la question (id) a coché l\'une de ces réponses (une par ligne)</label><div class="q-show-when-row"><input type="text" class="q-show-when-id" value="' + showWhenId + '" placeholder="Id question (ex: 1_0_0)"><textarea class="q-show-when-opts" placeholder="Option 1\nOption 2">' + showWhenOpts + '</textarea></div></div>';
+        html += '</div>';
+        });
+        html += '<button type="button" class="btn btn-secondary add-question-btn">+ Ajouter une question</button>';
+        axeDiv.innerHTML = html;
+        axesContainer.appendChild(axeDiv);
+
+        axeDiv.querySelector('.axe-title').addEventListener('change', collectAndSave);
+        axeDiv.querySelectorAll('.btn-move-axe').forEach(btn => btn.addEventListener('click', function () { moveAxe(axeDiv, parseInt(this.dataset.delta, 10)); }));
+        axeDiv.querySelector('.btn-remove-axe').addEventListener('click', () => removeAxe(axeDiv));
+        axeDiv.querySelectorAll('.q-text, .q-type, .q-placeholder, .q-options, .q-dir, .q-show-when-id, .q-show-when-opts').forEach(el => el.addEventListener('change', collectAndSave));
+        axeDiv.querySelectorAll('.q-dir').forEach(el => el.addEventListener('change', collectAndSave));
+        axeDiv.querySelectorAll('.q-type').forEach(sel => sel.addEventListener('change', function () { this.closest('.question-row').classList.toggle('question-row--checkbox', this.value === 'checkbox'); }));
+        axeDiv.querySelector('.add-question-btn').addEventListener('click', () => addQuestion(axeDiv));
+
+        axeDiv.addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          const row = btn.closest('.question-row');
+          if (!row) return;
+          const rows = Array.from(axeDiv.querySelectorAll('.question-row'));
+          const idx = rows.indexOf(row);
+          if (btn.classList.contains('btn-move-up')) moveQuestion(axeDiv, idx, -1);
+          if (btn.classList.contains('btn-move-down')) moveQuestion(axeDiv, idx, 1);
+          if (btn.classList.contains('btn-remove')) removeQuestion(axeDiv, idx);
+        });
+      });
+    });
+  }
+
+  function collectConfigFromDOM() {
+    const rdvs = [];
+    const axes = [];
+    document.querySelectorAll('.rdv-editor').forEach((rdvWrap) => {
+      const rdv = rdvWrap.dataset.rdv;
+      const title = (rdvWrap.querySelector('.rdv-title')?.value || '').trim();
+      rdvs.push({ rdv, title });
+      rdvWrap.querySelectorAll('.axe-editor').forEach((axeDiv) => {
+      const rdv = axeDiv.dataset.rdv;
+      const axe = axeDiv.dataset.axe;
+      const title = (axeDiv.querySelector('.axe-title')?.value || '').trim();
+      const questions = [];
+      const usedIdsInAxe = new Set();
+      axeDiv.querySelectorAll('.question-row').forEach((row, i) => {
+        const idInput = row.querySelector('.q-id');
+        const qTextInput = row.querySelector('.q-text');
+        let id = (idInput?.value || '').trim() || (rdv + '_' + axe + '_' + i);
+        if (usedIdsInAxe.has(id)) {
+          let k = 0;
+          while (usedIdsInAxe.has(rdv + '_' + axe + '_' + k)) k++;
+          id = rdv + '_' + axe + '_' + k;
+          if (idInput) idInput.value = id;
+        }
+        usedIdsInAxe.add(id);
+        const rawText = (qTextInput?.value || '').trim();
+        const text = stripLeadingNumberPrefix(rawText);
+        if (text !== rawText && qTextInput) qTextInput.value = text;
+        const type = row.querySelector('.q-type')?.value || 'textarea';
+        const opt = { id, text, type, placeholder: (row.querySelector('.q-placeholder')?.value || '').trim() || 'Réponse du prospect...', risque: row.dataset.risque || null, direction: row.dataset.direction || null };
+        const dirChecked = Array.from(row.querySelectorAll('.q-dir:checked')).map(c => c.value);
+        if (dirChecked.length) opt.directions = dirChecked;
+        const swId = (row.querySelector('.q-show-when-id')?.value || '').trim();
+        const swOpts = (row.querySelector('.q-show-when-opts')?.value || '').trim().split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+        if (swId && swOpts.length) opt.showWhen = { questionId: swId, options: swOpts };
+        if (type === 'checkbox') {
+          const optsText = (row.querySelector('.q-options')?.value || '').trim();
+          opt.options = optsText ? optsText.split(/\r?\n/).map(s => s.trim()).filter(Boolean) : [];
+        }
+        questions.push(opt);
+      });
+      axes.push({ rdv, axe, title, questions });
+      });
+    });
+    return { version: 2, rdvs, axes };
+  }
+
+  function collectAndSave() {
+    const config = collectConfigFromDOM();
+    setConfig(config);
+    window._lastConfig = config;
+    refreshNomenclatureBadges(config);
+  }
+
+  function refreshNomenclatureBadges(config) {
+    const nomenclatures = computeNomenclature(config);
+    document.querySelectorAll('.question-row').forEach(row => {
+      const idInput = row.querySelector('.q-id');
+      const badge = row.querySelector('.q-id-badge.q-nomenclature');
+      if (!idInput) return;
+      const id = (idInput.value || '').trim();
+      const idDisplay = id.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      const num = nomenclatures[id];
+      const depth = num ? (num.split('.').length - 1) : 0;
+      if (badge) badge.innerHTML = num ? (num + ' <span class="q-id-sub">(' + idDisplay + ')</span>') : idDisplay;
+      row.removeAttribute('data-depth');
+      row.setAttribute('data-depth', String(depth));
+      row.classList.remove('question-row--depth-0', 'question-row--depth-1', 'question-row--depth-2', 'question-row--depth-3', 'question-row--depth-4', 'question-row--depth-5');
+      row.classList.add('question-row--depth-' + (depth <= 5 ? depth : 5));
+    });
+  }
+
+  function getRowId(row) {
+    return (row.querySelector('.q-id')?.value || '').trim();
+  }
+  function getRowShowWhenId(row) {
+    return (row.querySelector('.q-show-when-id')?.value || '').trim();
+  }
+
+  /** Retourne les indices des questions formant le bloc parent + tous ses descendants (ordre conservé). */
+  function getParentChildBlockIndices(rows) {
+    const idToIdx = new Map();
+    rows.forEach((r, i) => { const id = getRowId(r); if (id) idToIdx.set(id, i); });
+    return function startBlock(qIdx) {
+      const blockIds = new Set();
+      const blockIndices = [];
+      const add = (idx) => {
+        if (blockIndices.indexOf(idx) !== -1) return;
+        blockIndices.push(idx);
+        const id = getRowId(rows[idx]);
+        if (id) blockIds.add(id);
+      };
+      add(qIdx);
+      let changed = true;
+      while (changed) {
+        changed = false;
+        rows.forEach((row, i) => {
+          if (blockIndices.indexOf(i) !== -1) return;
+          const swId = getRowShowWhenId(row);
+          if (swId && blockIds.has(swId)) { add(i); changed = true; }
+        });
+      }
+      return blockIndices.sort((a, b) => a - b);
+    };
+  }
+
+  function moveQuestion(axeDiv, qIdx, delta) {
+    const rows = Array.from(axeDiv.querySelectorAll('.question-row'));
+    const parentEl = axeDiv.querySelector('.question-row')?.parentElement;
+    if (!parentEl) return;
+    const getBlock = getParentChildBlockIndices(rows);
+    const blockIndices = getBlock(qIdx);
+    const blockRows = blockIndices.map((i) => rows[i]);
+    let referenceRow = null;
+    if (delta < 0) {
+      for (let i = qIdx - 1; i >= 0; i--) {
+        if (blockIndices.indexOf(i) === -1) { referenceRow = rows[i]; break; }
+      }
+      if (!referenceRow) return;
+      let ref = referenceRow;
+      for (let i = blockRows.length - 1; i >= 0; i--) {
+        parentEl.insertBefore(blockRows[i], ref);
+        ref = blockRows[i];
+      }
+    } else {
+      for (let i = qIdx + 1; i < rows.length; i++) {
+        if (blockIndices.indexOf(i) === -1) { referenceRow = rows[i]; break; }
+      }
+      if (!referenceRow) return;
+      let ref = referenceRow;
+      for (let i = 0; i < blockRows.length; i++) {
+        parentEl.insertBefore(blockRows[i], ref.nextSibling);
+        ref = blockRows[i];
+      }
+    }
+    collectAndSave();
+  }
+
+  function removeQuestion(axeDiv, qIdx) {
+    const row = axeDiv.querySelectorAll('.question-row')[qIdx];
+    if (row) row.remove();
+    collectAndSave();
+  }
+
+  function addQuestion(axeDiv) {
+    const rdv = axeDiv.dataset.rdv;
+    const axe = axeDiv.dataset.axe;
+    const count = axeDiv.querySelectorAll('.question-row').length;
+    const newId = rdv + '_' + axe + '_new' + count;
+    const row = document.createElement('div');
+    row.className = 'question-row';
+    row.dataset.qidx = count;
+    var visHtml = '<div class="q-visibility"><label>Directions (vide = toutes)</label><div class="q-dirs">';
+    DIRECTION_OPTS.forEach(function(d) { visHtml += '<label class="q-dir-wrap"><input type="checkbox" class="q-dir" value="' + d.value + '">' + d.label + '</label>'; });
+    visHtml += '</div><label>Afficher si la question (id) a coché l\'une de ces réponses (une par ligne)</label><div class="q-show-when-row"><input type="text" class="q-show-when-id" placeholder="Id question (ex: 1_0_0)"><textarea class="q-show-when-opts" placeholder="Option 1\nOption 2"></textarea></div></div>';
+    row.innerHTML = '<span class="q-id-badge q-nomenclature" title="Nomenclature (ordre d\'affichage). Id entre parenthèses pour « Afficher si… »">' + newId + '</span><input type="hidden" class="q-id" value="' + newId + '">' +
+      '<input type="text" class="q-text" value="" placeholder="Texte de la question">' +
+      '<select class="q-type"><option value="textarea" selected>Zone de texte</option><option value="text">Texte court</option><option value="number">Nombre</option><option value="checkbox">Case à cocher</option></select>' +
+      '<div class="q-options-wrap"><textarea class="q-options" placeholder="Une option par ligne"></textarea></div>' +
+      '<input type="text" class="q-placeholder" value="Réponse du prospect..." placeholder="Placeholder" style="max-width:140px">' +
+      '<div class="btn-row"><button type="button" class="btn btn-secondary btn-move-up" title="Monter">↑</button><button type="button" class="btn btn-secondary btn-move-down" title="Descendre">↓</button><button type="button" class="btn btn-secondary btn-remove" title="Supprimer">✕</button></div>' +
+      visHtml;
+    const addBtn = axeDiv.querySelector('.add-question-btn');
+    axeDiv.insertBefore(row, addBtn);
+    row.querySelector('.q-text').focus();
+    row.querySelectorAll('.q-text, .q-type, .q-placeholder, .q-options, .q-dir, .q-show-when-id, .q-show-when-opts').forEach(el => el.addEventListener('change', collectAndSave));
+    row.querySelectorAll('.q-dir').forEach(el => el.addEventListener('change', collectAndSave));
+    row.querySelector('.q-type').addEventListener('change', function () { row.classList.toggle('question-row--checkbox', this.value === 'checkbox'); });
+    const idx = axeDiv.querySelectorAll('.question-row').length - 1;
+    row.querySelector('.btn-move-up').addEventListener('click', () => moveQuestion(axeDiv, idx, -1));
+    row.querySelector('.btn-move-down').addEventListener('click', () => moveQuestion(axeDiv, idx, 1));
+    row.querySelector('.btn-remove').addEventListener('click', () => row.remove() && collectAndSave());
+    collectAndSave();
+  }
+
+  function addAxe(rdvWrap) {
+    const rdv = rdvWrap.dataset.rdv;
+    const existingAxes = Array.from(rdvWrap.querySelectorAll('.axe-editor')).map(a => a.dataset.axe);
+    const max = existingAxes.map(a => parseInt(a, 10)).filter(n => !isNaN(n)).reduce((m, v) => Math.max(m, v), -1);
+    const newAxeId = String(max + 1);
+    const axesContainer = rdvWrap.querySelector('.rdv-axes-editor');
+    const axeDiv = document.createElement('div');
+    axeDiv.className = 'axe-editor';
+    axeDiv.dataset.rdv = rdv;
+    axeDiv.dataset.axe = newAxeId;
+    axeDiv.innerHTML = '<h3><span class="badge-rdv">Axe</span> <input type="text" class="axe-title" value="Nouveau groupe" placeholder="Titre du groupe"><button type="button" class="btn btn-secondary btn-move-axe" data-delta="-1" title="Monter l\'axe">↑</button><button type="button" class="btn btn-secondary btn-move-axe" data-delta="1" title="Descendre l\'axe">↓</button><button type="button" class="btn btn-secondary btn-remove-axe" title="Supprimer ce groupe">✕ Supprimer l\'axe</button></h3>' +
+      '<button type="button" class="btn btn-secondary add-question-btn">+ Ajouter une question</button>';
+    axesContainer.appendChild(axeDiv);
+    axeDiv.querySelector('.axe-title').addEventListener('change', collectAndSave);
+    axeDiv.querySelectorAll('.btn-move-axe').forEach(btn => btn.addEventListener('click', function () { moveAxe(axeDiv, parseInt(this.dataset.delta, 10)); }));
+    axeDiv.querySelector('.add-question-btn').addEventListener('click', () => addQuestion(axeDiv));
+    axeDiv.querySelector('.btn-remove-axe').addEventListener('click', () => removeAxe(axeDiv));
+    collectAndSave();
+  }
+
+  function addRdv() {
+    const container = document.getElementById('editorContent');
+    const existing = Array.from(container.querySelectorAll('.rdv-editor')).map(w => parseInt(w.dataset.rdv, 10)).filter(n => !isNaN(n));
+    const newRdvNum = existing.length ? Math.max(...existing) + 1 : 1;
+    const newRdv = String(newRdvNum);
+    const rdvWrap = document.createElement('div');
+    rdvWrap.className = 'rdv-editor';
+    rdvWrap.dataset.rdv = newRdv;
+    const titleVal = 'RDV ' + newRdv;
+    rdvWrap.innerHTML = '<h2><span class="badge-rdv">RDV ' + newRdv + '</span><input type="text" class="rdv-title" value="' + titleVal.replace(/"/g, '&quot;') + '" placeholder="Libellé du RDV"></h2><div class="rdv-axes-editor"></div><button type="button" class="btn btn-secondary add-axe-btn">+ Ajouter un groupe (axe)</button>';
+    container.appendChild(rdvWrap);
+    rdvWrap.querySelector('.rdv-title').addEventListener('change', collectAndSave);
+    rdvWrap.querySelector('.add-axe-btn').addEventListener('click', () => addAxe(rdvWrap));
+    collectAndSave();
+  }
+
+  function moveAxe(axeDiv, delta) {
+    const container = axeDiv.parentElement;
+    if (!container || !container.classList.contains('rdv-axes-editor')) return;
+    const axes = Array.from(container.querySelectorAll('.axe-editor'));
+    const idx = axes.indexOf(axeDiv);
+    const newIdx = idx + delta;
+    if (newIdx < 0 || newIdx >= axes.length) return;
+    const target = axes[newIdx];
+    if (delta < 0) container.insertBefore(axeDiv, target);
+    else container.insertBefore(axeDiv, target.nextSibling);
+    collectAndSave();
+  }
+
+  function removeAxe(axeDiv) {
+    if (confirm('Supprimer ce groupe (axe) et toutes ses questions ?')) {
+      axeDiv.remove();
+      collectAndSave();
+    }
+  }
+
+  function fixCollectedIds() {
+    const config = collectConfigFromDOM();
+    config.axes.forEach((axis) => {
+      const usedInAxe = new Set();
+      const rdv = String(axis.rdv);
+      const axe = String(axis.axe);
+      axis.questions.forEach((q) => {
+        let id = (q.id || '').trim();
+        if (!id || id.includes('_new') || usedInAxe.has(id)) {
+          let k = 0;
+          while (usedInAxe.has(rdv + '_' + axe + '_' + k)) k++;
+          id = rdv + '_' + axe + '_' + k;
+        }
+        usedInAxe.add(id);
+        q.id = id;
+      });
+    });
+    return config;
+  }
+
+  document.getElementById('btnSaveConfig').addEventListener('click', function () {
+    const config = fixCollectedIds();
+    setConfig(config);
+    window.location.href = 'processus-vente.html';
+  });
+
+  document.getElementById('btnExportJson').addEventListener('click', function () {
+    const config = fixCollectedIds();
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'conitiv-processus-questions.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  document.getElementById('inputImportJson').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = function () {
+      try {
+        const config = JSON.parse(r.result);
+        if (config && (config.axes || config.rdvs)) {
+          setConfig(normalizeConfig(config));
+          window._lastConfig = config;
+          renderEditor(normalizeConfig(config));
+          document.getElementById('emptyState').style.display = 'none';
+          document.getElementById('editorSection').style.display = 'block';
+          document.getElementById('editorActions').style.display = 'flex';
+          document.getElementById('addRdvSection').style.display = 'block';
+        }
+      } catch (e) {
+        alert('Fichier JSON invalide.');
+      }
+      document.getElementById('inputImportJson').value = '';
+    };
+    r.readAsText(file);
+  });
+
+  document.getElementById('btnResetConfig').addEventListener('click', function () {
+    if (!confirm('Réinitialiser supprime votre configuration personnalisée. La page Processus de vente affichera à nouveau les questions par défaut. Continuer ?')) return;
+    localStorage.removeItem(CONFIG_KEY);
+    window.location.href = 'processus-vente.html';
+  });
+
+  document.getElementById('btnAddRdv').addEventListener('click', addRdv);
+
+  document.getElementById('btnCreateFirstRdv').addEventListener('click', function () {
+    const config = normalizeConfig({ version: 2, rdvs: [{ rdv: '1', title: 'RDV 1' }], axes: [] });
+    setConfig(config);
+    window._lastConfig = config;
+    renderEditor(config);
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('editorSection').style.display = 'block';
+    document.getElementById('editorActions').style.display = 'flex';
+    document.getElementById('addRdvSection').style.display = 'block';
+  });
+
+  function showEditor() {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('editorSection').style.display = 'block';
+    document.getElementById('editorActions').style.display = 'flex';
+    document.getElementById('addRdvSection').style.display = 'block';
+  }
+
+  const config = normalizeConfig(getConfig());
+  if (config && (config.rdvs && config.rdvs.length > 0 || config.axes && config.axes.length > 0)) {
+    window._lastConfig = config;
+    renderEditor(config);
+    showEditor();
+  } else {
+    document.getElementById('editorSection').querySelector('#editorContent').innerHTML = '';
+    document.getElementById('editorSection').style.display = 'none';
+  }
+})();
+  </script>
+</body>
+</html>

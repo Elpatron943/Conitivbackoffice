@@ -19,6 +19,7 @@
         <a href="calculator.html">Calculateur</a>
         <a href="crm.html">CRM</a>
         <a href="processus-vente.html" class="nav-active">Processus vente</a>
+        <a href="audit.html">Audit</a>
       </nav>
     </div>
   </header>
@@ -28,7 +29,6 @@
       <div class="container container--wide">
         <h1 class="processus-title">🧠 MEDDIC avancé — Processus de vente</h1>
         <p class="processus-subtitle">Prospection cyber / TPRM / scoring fournisseurs — vente complexe. Structuré par RDV.</p>
-
         <!-- Filtres & Sélection client -->
         <div class="client-selector">
           <h2>👤 Client</h2>
@@ -158,46 +158,6 @@
                 <label for="prospectPresence">Présence géographique</label>
                 <input type="text" id="prospectPresence" placeholder="Ex: France, UE, international">
               </div>
-              <div class="fiche-field fiche-field--wide">
-                <label for="prospectEnjeux">Principaux enjeux métier / réglementaires</label>
-                <textarea id="prospectEnjeux" rows="2" placeholder="NIS2, DORA, RGPD, contrats clients, etc."></textarea>
-              </div>
-            </div>
-          </div>
-
-          <div class="contexte-section">
-            <h3>📐 Organisation du client</h3>
-            <div class="contexte-grid">
-              <div class="fiche-field">
-                <label for="prospectStructure">Structure (groupe, filiale, indépendant)</label>
-                <select id="prospectStructure">
-                  <option value="">-- Choisir --</option>
-                  <option value="independant">Indépendant</option>
-                  <option value="filiale">Filiale d'un groupe</option>
-                  <option value="holding">Holding / maison-mère</option>
-                  <option value="joint">Joint-venture</option>
-                </select>
-              </div>
-              <div class="fiche-field">
-                <label for="prospectSiege">Siège / périmètre concerné</label>
-                <input type="text" id="prospectSiege" placeholder="Ex: France uniquement, Europe">
-              </div>
-              <div class="fiche-field fiche-field--wide">
-                <label for="prospectFonctions">Fonctions impliquées sur le risque fournisseur</label>
-                <input type="text" id="prospectFonctions" placeholder="Ex: Achats, IT, RSSI, Risk, Conformité, Juridique">
-              </div>
-              <div class="fiche-field fiche-field--wide">
-                <label for="prospectPilotage">Qui pilote la cartographie / le risque tiers aujourd'hui ?</label>
-                <input type="text" id="prospectPilotage" placeholder="Ex: RSSI, Risk Manager, Achats">
-              </div>
-              <div class="fiche-field fiche-field--wide">
-                <label for="prospectReporting">Reporting actuel (COMEX, CODIR, instances)</label>
-                <textarea id="prospectReporting" rows="2" placeholder="Fréquence, contenu, qui présente..."></textarea>
-              </div>
-              <div class="fiche-field fiche-field--wide">
-                <label for="prospectOutils">Outils actuels (TPRM, GRC, questionnaires, etc.)</label>
-                <input type="text" id="prospectOutils" placeholder="Ex: Excel, outil interne, prestataire">
-              </div>
             </div>
           </div>
 
@@ -266,9 +226,9 @@
           </div>
 
           <div class="rdv-axes">
-            <div class="axe">
+            <div class="axe" data-rdv="1" data-axe="0">
               <h4>0️⃣ Contexte client (activité & organisation)</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="1" data-axe="0">
                 <div class="question-block"><div class="question-text">Quelle est votre activité principale et vos principaux clients ?</div><textarea class="question-champ" data-q="1_0a" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Comment est structurée votre organisation (achats, IT, cyber, RSSI, Risk) ?</div><textarea class="question-champ" data-q="1_0b" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Qui pilote aujourd'hui la cartographie des tiers et le risque fournisseur ?</div><textarea class="question-champ" data-q="1_0c" placeholder="Réponse du prospect..."></textarea></div>
@@ -276,26 +236,26 @@
                 <div class="question-block"><div class="question-text">Quels outils ou processus utilisez-vous actuellement pour la gestion des tiers ?</div><textarea class="question-champ" data-q="1_0e" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="1" data-axe="1">
               <h4>1️⃣ Architecture du risque réel</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="1" data-axe="1">
                 <div class="question-block"><div class="question-text">Quels types de tiers pourraient arrêter votre activité demain matin ?</div><textarea class="question-champ" data-q="1_1" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quels fournisseurs seraient impossibles à remplacer sous 30 jours ?</div><textarea class="question-champ" data-q="1_2" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quels tiers ont à la fois accès à vos données et à vos opérations ?</div><textarea class="question-champ" data-q="1_3" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Dans votre cartographie actuelle, qu'est-ce qui est factuel vs supposé ?</div><textarea class="question-champ" data-q="1_4" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="1" data-axe="2">
               <h4>2️⃣ Angles morts & faux sentiment de contrôle</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="1" data-axe="2">
                 <div class="question-block"><div class="question-text">Sur quels fournisseurs êtes-vous « confiant » sans preuve objective ?</div><textarea class="question-champ" data-q="1_5" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quand avez-vous découvert pour la dernière fois un risque fournisseur trop tard ?</div><textarea class="question-champ" data-q="1_6" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quels tiers n'apparaissent jamais dans vos reportings actuels ?</div><textarea class="question-champ" data-q="1_7" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="1" data-axe="3">
               <h4>3️⃣ Pressions externes latentes</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="1" data-axe="3">
                 <div class="question-block" data-risque="cyber"><div class="question-text">Quelles exigences cyber vous sont imposées sans être totalement claires ?</div><textarea class="question-champ" data-q="1_8" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="rgpd"><div class="question-text">Quelles exigences RGPD / NIS2 / DORA vous sont imposées par vos clients ou régulateurs ?</div><textarea class="question-champ" data-q="1_8_rgpd" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="esg"><div class="question-text">Quelles exigences ESG (CSRD, chaîne de valeur) vous sont imposées ?</div><textarea class="question-champ" data-q="1_8_esg" placeholder="Réponse du prospect..."></textarea></div>
@@ -304,17 +264,17 @@
                 <div class="question-block"><div class="question-text">Si un incident fournisseur survient, qui devra s'expliquer ?</div><textarea class="question-champ" data-q="1_10" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="1" data-axe="4">
               <h4>4️⃣ Metrics implicites (sans chiffres précis)</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="1" data-axe="4">
                 <div class="question-block"><div class="question-text">Quel serait l'impact réel d'un incident fournisseur sur vos clients clés ?</div><textarea class="question-champ" data-q="1_11" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quelle serait la conséquence la plus coûteuse : arrêt, image ou perte de contrat ?</div><textarea class="question-champ" data-q="1_12" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">À partir de quel niveau de risque votre direction réagit ?</div><textarea class="question-champ" data-q="1_13" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="1" data-axe="5">
               <h4>5️⃣ Premiers signaux process</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="1" data-axe="5">
                 <div class="question-block" data-risque="cyber"><div class="question-text">Comment un sujet cyber devient-il prioritaire chez vous ?</div><textarea class="question-champ" data-q="1_14" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="esg"><div class="question-text">Comment un sujet ESG devient-il prioritaire chez vous ?</div><textarea class="question-champ" data-q="1_14_esg" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="rgpd"><div class="question-text">Comment la conformité RGPD/NIS2 devient-elle prioritaire ?</div><textarea class="question-champ" data-q="1_14_rgpd" placeholder="Réponse du prospect..."></textarea></div>
@@ -322,9 +282,9 @@
                 <div class="question-block"><div class="question-text">Qui est consulté avant même de parler budget ?</div><textarea class="question-champ" data-q="1_15" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe axe-adaptatif">
+            <div class="axe axe-adaptatif" data-rdv="1" data-axe="6">
               <h4>6️⃣ Questions adaptatives (risque × direction)</h4>
-              <div class="questions-list" id="questionsAdaptatives">
+              <div class="questions-list" id="questionsAdaptatives" data-rdv="1" data-axe="6">
                 <div class="question-block" data-risque="cyber" data-direction="it"><div class="question-text">Quels flux de données transitent via vos fournisseurs IT ? Quels accès ont-ils à vos systèmes ?</div><textarea class="question-champ" data-q="1_adapt_cyber_it" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="cyber" data-direction="rssi"><div class="question-text">Comment évaluez-vous aujourd'hui le niveau de maturité cyber de vos fournisseurs critiques ?</div><textarea class="question-champ" data-q="1_adapt_cyber_rssi" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="cyber" data-direction="finance"><div class="question-text">Quel impact financier un incident cyber fournisseur aurait-il sur vos résultats ?</div><textarea class="question-champ" data-q="1_adapt_cyber_finance" placeholder="Réponse du prospect..."></textarea></div>
@@ -387,17 +347,17 @@
             <p class="rdv-meddic">MEDDIC : M (quantifié), DC, D</p>
           </div>
           <div class="rdv-axes">
-            <div class="axe">
+            <div class="axe" data-rdv="2" data-axe="0">
               <h4>1️⃣ Efficacité réelle des méthodes actuelles</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="2" data-axe="0">
                 <div class="question-block"><div class="question-text">Qu'est-ce que vos outils actuels ne savent pas vous dire ?</div><textarea class="question-champ" data-q="2_1" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quelles décisions sont aujourd'hui prises sans données fiables ?</div><textarea class="question-champ" data-q="2_2" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quel est le taux de fournisseurs réellement suivis dans le temps ?</div><textarea class="question-champ" data-q="2_3" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="2" data-axe="1">
               <h4>2️⃣ Arbitrages et priorisation</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="2" data-axe="1">
                 <div class="question-block"><div class="question-text">Comment décidez-vous quel fournisseur auditer en premier ?</div><textarea class="question-champ" data-q="2_4" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Que se passe-t-il si deux risques critiques émergent simultanément ?</div><textarea class="question-champ" data-q="2_5" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="cyber"><div class="question-text">Qui tranche quand le risque cyber entre en conflit avec les achats ?</div><textarea class="question-champ" data-q="2_6" placeholder="Réponse du prospect..."></textarea></div>
@@ -405,17 +365,17 @@
                 <div class="question-block" data-risque="defaillance"><div class="question-text">Qui tranche quand le risque fournisseur entre en conflit avec les achats ?</div><textarea class="question-champ" data-q="2_6_def" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="2" data-axe="2">
               <h4>3️⃣ Decision Criteria non-dits</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="2" data-axe="2">
                 <div class="question-block"><div class="question-text">Qu'est-ce qui ferait rejeter une solution même techniquement excellente ?</div><textarea class="question-champ" data-q="2_7" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quelles erreurs passées ont rendu la direction méfiante ?</div><textarea class="question-champ" data-q="2_8" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">À quoi votre direction est-elle allergique ?</div><textarea class="question-champ" data-q="2_9" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="2" data-axe="3">
               <h4>4️⃣ Processus réel (vs officiel)</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="2" data-axe="3">
                 <div class="question-block"><div class="question-text">Qui peut bloquer ce type de projet sans être décideur ?</div><textarea class="question-champ" data-q="2_10" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">À quel moment les achats reprennent la main ?</div><textarea class="question-champ" data-q="2_11" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block" data-risque="cyber"><div class="question-text">Qu'est-ce qui fait dérailler un projet cyber chez vous ?</div><textarea class="question-champ" data-q="2_12" placeholder="Réponse du prospect..."></textarea></div>
@@ -423,9 +383,9 @@
                 <div class="question-block" data-risque="rgpd"><div class="question-text">Qu'est-ce qui fait dérailler un projet conformité RGPD/NIS2 chez vous ?</div><textarea class="question-champ" data-q="2_12_rgpd" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="2" data-axe="4">
               <h4>5️⃣ Chiffrage indirect</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="2" data-axe="4">
                 <div class="question-block"><div class="question-text">Combien d'ETP sont mobilisés aujourd'hui pour gérer ce risque ?</div><textarea class="question-champ" data-q="2_13" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quel est le coût d'un faux positif ou d'un risque sous-estimé ?</div><textarea class="question-champ" data-q="2_14" placeholder="Réponse du prospect..."></textarea></div>
               </div>
@@ -481,33 +441,33 @@
             <p class="rdv-meddic">MEDDIC : E + C</p>
           </div>
           <div class="rdv-axes">
-            <div class="axe">
+            <div class="axe" data-rdv="3" data-axe="0">
               <h4>1️⃣ Budget & arbitrage</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="3" data-axe="0">
                 <div class="question-block"><div class="question-text">Qui perd quelque chose si ce projet n'aboutit pas ?</div><textarea class="question-champ" data-q="3_1" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quel budget serait coupé pour financer celui-ci ?</div><textarea class="question-champ" data-q="3_2" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quelle crise déclencherait un budget immédiat ?</div><textarea class="question-champ" data-q="3_3" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="3" data-axe="1">
               <h4>2️⃣ Acheteur économique réel</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="3" data-axe="1">
                 <div class="question-block"><div class="question-text">Qui signerait si un incident survenait demain ?</div><textarea class="question-champ" data-q="3_4" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Qui serait convoqué par le COMEX ?</div><textarea class="question-champ" data-q="3_5" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Qui peut dire « oui » sans justification supplémentaire ?</div><textarea class="question-champ" data-q="3_6" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="3" data-axe="2">
               <h4>3️⃣ Champion réel vs sponsor passif</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="3" data-axe="2">
                 <div class="question-block"><div class="question-text">Que risquez-vous personnellement si rien ne change ?</div><textarea class="question-champ" data-q="3_7" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Seriez-vous prêt à défendre ce projet sans moi en comité ?</div><textarea class="question-champ" data-q="3_8" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quelles objections internes devrai-je vous aider à traiter ?</div><textarea class="question-champ" data-q="3_9" placeholder="Réponse du prospect..."></textarea></div>
               </div>
             </div>
-            <div class="axe">
+            <div class="axe" data-rdv="3" data-axe="3">
               <h4>4️⃣ Cartographie politique</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="3" data-axe="3">
                 <div class="question-block"><div class="question-text">Qui est historiquement opposé à ce type de projet ?</div><textarea class="question-champ" data-q="3_10" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Qui pourrait récupérer le projet à son compte ?</div><textarea class="question-champ" data-q="3_11" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Qui doit absolument être rassuré ?</div><textarea class="question-champ" data-q="3_12" placeholder="Réponse du prospect..."></textarea></div>
@@ -564,9 +524,9 @@
             <p class="rdv-meddic">MEDDIC : M + E + DC</p>
           </div>
           <div class="rdv-axes">
-            <div class="axe">
+            <div class="axe" data-rdv="4" data-axe="0">
               <h4>Questions exécutives</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="4" data-axe="0">
                 <div class="question-block"><div class="question-text">Quel risque la direction est-elle prête à accepter… et lequel non ?</div><textarea class="question-champ" data-q="4_1" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quel scénario ferait regretter de ne pas avoir agi ?</div><textarea class="question-champ" data-q="4_2" placeholder="Réponse du prospect..."></textarea></div>
                 <div class="question-block"><div class="question-text">Quelle preuve devra être présentée en cas de contrôle ?</div><textarea class="question-champ" data-q="4_3" placeholder="Réponse du prospect..."></textarea></div>
@@ -616,9 +576,9 @@
             <h2>Closing politique (si nécessaire)</h2>
           </div>
           <div class="rdv-axes">
-            <div class="axe">
+            <div class="axe" data-rdv="5" data-axe="0">
               <h4>Points clés</h4>
-              <div class="questions-list">
+              <div class="questions-list" data-rdv="5" data-axe="0">
                 <div class="question-block"><div class="question-text">Arbitrage final</div><textarea class="question-champ" data-q="5_1" placeholder="Notes..."></textarea></div>
                 <div class="question-block"><div class="question-text">Réassurance personnelle</div><textarea class="question-champ" data-q="5_2" placeholder="Notes..."></textarea></div>
                 <div class="question-block"><div class="question-text">Décision formelle</div><textarea class="question-champ" data-q="5_3" placeholder="Notes..."></textarea></div>
@@ -678,6 +638,7 @@
           <button type="button" class="btn btn-primary" id="btnSave">Enregistrer la fiche</button>
           <button type="button" class="btn btn-primary btn-outline" id="btnDownloadSynthese">📥 Télécharger la synthèse client</button>
           <button type="button" class="btn btn-secondary" id="btnReset">Réinitialiser</button>
+          <a href="processus-vente-questions.html" class="btn btn-secondary" id="btnPersonnaliserQuestions">✏️ Personnaliser les questions</a>
         </div>
       </div>
     </section>
@@ -699,6 +660,23 @@
   </div>
 
   <script src="crm.js"></script>
+  <script src="processus-vente-questions.js"></script>
   <script src="processus-vente.js"></script>
+  <script>
+    document.getElementById('btnPersonnaliserQuestions')?.addEventListener('click', function(e) {
+      if (window.ConitivProcessusQuestions) {
+        var config = window.ConitivProcessusQuestions.buildQuestionsConfigFromDOM();
+        window.ConitivProcessusQuestions.setConfig(config);
+      }
+    });
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('capture') === '1' && window.ConitivProcessusQuestions) {
+        var config = window.ConitivProcessusQuestions.buildQuestionsConfigFromDOM();
+        window.ConitivProcessusQuestions.setConfig(config);
+        window.location.replace('processus-vente-questions.html');
+      }
+    })();
+  </script>
 </body>
 </html>

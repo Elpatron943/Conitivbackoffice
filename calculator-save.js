@@ -9,7 +9,7 @@
     'inputPIncident', 'inputPTiers', 'inputImpactDirect', 'inputImpactIndirect',
     'inputRatioCyber', 'inputInvestissement',
     'nis2EntityType', 'nis2Ca',
-    'nis2FacteurIncident', 'nis2FacteurNotification', 'nis2FacteurSecteur', 'nis2FacteurTiers', 'nis2FacteurSignalement', 'nis2FacteurAudit', 'nis2FacteurTaille',
+    'nis2FacteurIncidentPublic', 'nis2FacteurTiersCritiques', 'nis2FacteurMaturiteFaible', 'nis2FacteurSecteurRegule', 'nis2FacteurHistoriqueConformite',
     'inputEsgImpact', 'inputInvestissementEsg',
     'inputRgpd', 'inputNis2', 'inputDora', 'inputInvestissementRgpd',
     'inputPDefaillance', 'inputDefImpact', 'inputInvestissementDefaillance'
@@ -109,16 +109,28 @@
     Object.entries(saveData.values).forEach(([id, value]) => {
       if (id === 'size' && value === 'eti') value = 'eti_inf';
       if (id === 'nis2Situation') {
-        const incident = document.getElementById('nis2FacteurIncident');
-        const notification = document.getElementById('nis2FacteurNotification');
-        if (incident && notification) {
-          incident.checked = (value === 'incident' || value === 'nonconformite');
-          notification.checked = (value === 'nonconformite');
-        }
+        const incidentPublic = document.getElementById('nis2FacteurIncidentPublic');
+        const maturiteFaible = document.getElementById('nis2FacteurMaturiteFaible');
+        const historique = document.getElementById('nis2FacteurHistoriqueConformite');
+        if (incidentPublic) incidentPublic.checked = (value === 'incident' || value === 'nonconformite');
+        if (maturiteFaible) maturiteFaible.checked = (value === 'nonconformite');
+        if (historique) historique.checked = (value === 'nonconformite');
         return;
       }
       setValue(id, value);
     });
+
+    // Compatibilité anciennes sauvegardes (anciens IDs facteurs)
+    try {
+      const v = saveData.values || {};
+      if (v.nis2FacteurIncident != null) setValue('nis2FacteurIncidentPublic', v.nis2FacteurIncident);
+      if (v.nis2FacteurTiers != null) setValue('nis2FacteurTiersCritiques', v.nis2FacteurTiers);
+      if (v.nis2FacteurSecteur != null) setValue('nis2FacteurSecteurRegule', v.nis2FacteurSecteur);
+      if (v.nis2FacteurAudit != null) setValue('nis2FacteurHistoriqueConformite', v.nis2FacteurAudit);
+      if (v.nis2FacteurNotification != null) setValue('nis2FacteurHistoriqueConformite', v.nis2FacteurNotification);
+      if (v.nis2FacteurSignalement != null) setValue('nis2FacteurHistoriqueConformite', v.nis2FacteurSignalement);
+    } catch {}
+
     if (saveData.activeTab) setActiveTab(saveData.activeTab);
     triggerRecalc();
     showToast('Calculs chargés.', 'success');

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit risque tiers | Conitiv — TPRM / Scoring fournisseurs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="processus-vente.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container container--wide">
+      <a href="index.html" class="logo">Conitiv</a>
+      <nav class="nav">
+        <a href="index.html">Accueil</a>
+        <a href="calculator.html">Calculateur</a>
+        <a href="crm.html">CRM</a>
+        <a href="processus-vente.html">Processus vente</a>
+        <a href="audit.html" class="nav-active">Audit</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="processus-main">
+    <section class="section">
+      <div class="container container--wide">
+        <h1 class="processus-title">📋 Évaluation audit risque tiers</h1>
+        <p class="processus-subtitle">Questionnaire Oui/Non par pilier. Personnalisez par taille d'entreprise et secteur pour comparer votre score aux moyennes.</p>
+
+        <div class="audit-section" id="auditSection">
+          <div class="audit-saved-bar">
+            <h3 class="audit-saved-title">Audits enregistrés</h3>
+            <div class="audit-saved-controls">
+              <select id="auditSavedList" class="audit-saved-select" aria-label="Choisir un audit enregistré">
+                <option value="">-- Choisir un audit --</option>
+              </select>
+              <button type="button" class="btn btn-primary btn--small" id="btnLoadAudit" disabled>Charger</button>
+              <button type="button" class="btn btn-secondary btn--small" id="btnDeleteSavedAudit" disabled>Supprimer</button>
+            </div>
+          </div>
+          <p class="audit-intro">Répondez par Oui/Non à chaque question. Poids : 4 points par Oui. Score maximum : 100.</p>
+          <div class="audit-fields">
+            <div class="fiche-field">
+              <label for="auditNomEntreprise">Nom de l'entreprise</label>
+              <input type="text" id="auditNomEntreprise" placeholder="Raison sociale">
+            </div>
+            <div class="fiche-field">
+              <label for="auditTaille">Taille d'entreprise</label>
+              <select id="auditTaille">
+                <option value="">-- Choisir --</option>
+                <option value="pme">PME</option>
+                <option value="eti_250_1000">ETI (250-1000)</option>
+                <option value="eti_1000_5000">ETI (1000-5000)</option>
+                <option value="grand">Grande entreprise</option>
+              </select>
+            </div>
+            <div class="fiche-field">
+              <label for="auditSecteur">Secteur d'activité</label>
+              <select id="auditSecteur">
+                <option value="">-- Choisir --</option>
+                <option value="industrie">Industrie</option>
+                <option value="finance">Finance</option>
+                <option value="retail">Retail</option>
+                <option value="sante">Santé</option>
+                <option value="telecom">Télécom</option>
+                <option value="services">Services</option>
+              </select>
+            </div>
+            <div class="fiche-field">
+              <label for="auditPrenom">Prénom de l'audité</label>
+              <input type="text" id="auditPrenom" placeholder="Prénom">
+            </div>
+            <div class="fiche-field">
+              <label for="auditNom">Nom de l'audité</label>
+              <input type="text" id="auditNom" placeholder="Nom">
+            </div>
+          </div>
+          <div class="audit-score-display">
+            <strong>Score total : <span id="auditScoreTotal">0</span> / 100</strong>
+          </div>
+          <div class="audit-table-wrap">
+            <table class="audit-table">
+              <thead>
+                <tr>
+                  <th>Pilier</th>
+                  <th>ID</th>
+                  <th>Question (Réponse Oui/Non)</th>
+                  <th>Réponse</th>
+                  <th class="audit-col-poids">Poids</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Gouvernance</td><td>1</td><td>Existe-t-il une politique formalisée de gestion des risques liés aux tiers ?</td><td class="audit-reponse"><label><input type="radio" name="audit_1" value="oui"> Oui</label> <label><input type="radio" name="audit_1" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="1">0</span></td></tr>
+                <tr><td>Gouvernance</td><td>2</td><td>La direction valide-t-elle la cartographie des risques tiers ?</td><td class="audit-reponse"><label><input type="radio" name="audit_2" value="oui"> Oui</label> <label><input type="radio" name="audit_2" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="2">0</span></td></tr>
+                <tr><td>Gouvernance</td><td>3</td><td>Un responsable interne est-il désigné pour le risque cyber tiers ?</td><td class="audit-reponse"><label><input type="radio" name="audit_3" value="oui"> Oui</label> <label><input type="radio" name="audit_3" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="3">0</span></td></tr>
+                <tr><td>Gouvernance</td><td>4</td><td>Le risque tiers est-il intégré dans la cartographie globale des risques ?</td><td class="audit-reponse"><label><input type="radio" name="audit_4" value="oui"> Oui</label> <label><input type="radio" name="audit_4" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="4">0</span></td></tr>
+                <tr><td>Gouvernance</td><td>5</td><td>Un reporting régulier est-il présenté au COMEX/Board ?</td><td class="audit-reponse"><label><input type="radio" name="audit_5" value="oui"> Oui</label> <label><input type="radio" name="audit_5" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="5">0</span></td></tr>
+                <tr><td>Cartographie &amp; Criticité</td><td>6</td><td>Disposez-vous d'un inventaire exhaustif des tiers critiques ?</td><td class="audit-reponse"><label><input type="radio" name="audit_6" value="oui"> Oui</label> <label><input type="radio" name="audit_6" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="6">0</span></td></tr>
+                <tr><td>Cartographie &amp; Criticité</td><td>7</td><td>Les tiers sont-ils classifiés selon leur criticité ?</td><td class="audit-reponse"><label><input type="radio" name="audit_7" value="oui"> Oui</label> <label><input type="radio" name="audit_7" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="7">0</span></td></tr>
+                <tr><td>Cartographie &amp; Criticité</td><td>8</td><td>Avez-vous identifié les tiers ayant accès à des données sensibles ?</td><td class="audit-reponse"><label><input type="radio" name="audit_8" value="oui"> Oui</label> <label><input type="radio" name="audit_8" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="8">0</span></td></tr>
+                <tr><td>Cartographie &amp; Criticité</td><td>9</td><td>Avez-vous identifié les tiers impactant la continuité d'activité ?</td><td class="audit-reponse"><label><input type="radio" name="audit_9" value="oui"> Oui</label> <label><input type="radio" name="audit_9" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="9">0</span></td></tr>
+                <tr><td>Contractuel &amp; Conformité</td><td>10</td><td>Les contrats incluent-ils des clauses cyber obligatoires ?</td><td class="audit-reponse"><label><input type="radio" name="audit_10" value="oui"> Oui</label> <label><input type="radio" name="audit_10" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="10">0</span></td></tr>
+                <tr><td>Contractuel &amp; Conformité</td><td>11</td><td>Les contrats prévoient-ils une notification d'incident &lt; 24h ?</td><td class="audit-reponse"><label><input type="radio" name="audit_11" value="oui"> Oui</label> <label><input type="radio" name="audit_11" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="11">0</span></td></tr>
+                <tr><td>Contractuel &amp; Conformité</td><td>12</td><td>Des exigences de certification (ISO 27001, SOC2…) sont-elles demandées ?</td><td class="audit-reponse"><label><input type="radio" name="audit_12" value="oui"> Oui</label> <label><input type="radio" name="audit_12" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="12">0</span></td></tr>
+                <tr><td>Contractuel &amp; Conformité</td><td>13</td><td>Un audit de conformité NIS2 incluant les tiers a-t-il été réalisé ?</td><td class="audit-reponse"><label><input type="radio" name="audit_13" value="oui"> Oui</label> <label><input type="radio" name="audit_13" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="13">0</span></td></tr>
+                <tr><td>Évaluation &amp; Due Diligence</td><td>14</td><td>Une évaluation cyber est-elle réalisée avant onboarding d'un tiers critique ?</td><td class="audit-reponse"><label><input type="radio" name="audit_14" value="oui"> Oui</label> <label><input type="radio" name="audit_14" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="14">0</span></td></tr>
+                <tr><td>Évaluation &amp; Due Diligence</td><td>15</td><td>Un questionnaire sécurité est-il systématiquement envoyé ?</td><td class="audit-reponse"><label><input type="radio" name="audit_15" value="oui"> Oui</label> <label><input type="radio" name="audit_15" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="15">0</span></td></tr>
+                <tr><td>Évaluation &amp; Due Diligence</td><td>16</td><td>Un scoring externe (type cyber rating) est-il utilisé ?</td><td class="audit-reponse"><label><input type="radio" name="audit_16" value="oui"> Oui</label> <label><input type="radio" name="audit_16" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="16">0</span></td></tr>
+                <tr><td>Évaluation &amp; Due Diligence</td><td>17</td><td>Les tiers critiques sont-ils réévalués au moins annuellement ?</td><td class="audit-reponse"><label><input type="radio" name="audit_17" value="oui"> Oui</label> <label><input type="radio" name="audit_17" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="17">0</span></td></tr>
+                <tr><td>Contrôles Techniques</td><td>18</td><td>Les accès tiers sont-ils protégés par MFA ?</td><td class="audit-reponse"><label><input type="radio" name="audit_18" value="oui"> Oui</label> <label><input type="radio" name="audit_18" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="18">0</span></td></tr>
+                <tr><td>Contrôles Techniques</td><td>19</td><td>Le principe du moindre privilège est-il appliqué aux tiers ?</td><td class="audit-reponse"><label><input type="radio" name="audit_19" value="oui"> Oui</label> <label><input type="radio" name="audit_19" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="19">0</span></td></tr>
+                <tr><td>Contrôles Techniques</td><td>20</td><td>Les accès tiers sont-ils revus périodiquement ?</td><td class="audit-reponse"><label><input type="radio" name="audit_20" value="oui"> Oui</label> <label><input type="radio" name="audit_20" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="20">0</span></td></tr>
+                <tr><td>Contrôles Techniques</td><td>21</td><td>Une segmentation réseau limite-t-elle l'accès des tiers ?</td><td class="audit-reponse"><label><input type="radio" name="audit_21" value="oui"> Oui</label> <label><input type="radio" name="audit_21" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="21">0</span></td></tr>
+                <tr><td>Surveillance &amp; Résilience</td><td>22</td><td>Un monitoring continu des vulnérabilités des tiers est-il en place ?</td><td class="audit-reponse"><label><input type="radio" name="audit_22" value="oui"> Oui</label> <label><input type="radio" name="audit_22" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="22">0</span></td></tr>
+                <tr><td>Surveillance &amp; Résilience</td><td>23</td><td>Les capacités de sauvegarde des tiers critiques sont-elles vérifiées ?</td><td class="audit-reponse"><label><input type="radio" name="audit_23" value="oui"> Oui</label> <label><input type="radio" name="audit_23" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="23">0</span></td></tr>
+                <tr><td>Surveillance &amp; Résilience</td><td>24</td><td>Des tests de gestion de crise incluant les tiers sont-ils réalisés ?</td><td class="audit-reponse"><label><input type="radio" name="audit_24" value="oui"> Oui</label> <label><input type="radio" name="audit_24" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="24">0</span></td></tr>
+                <tr><td>Surveillance &amp; Résilience</td><td>25</td><td>Une procédure d'offboarding sécurisé des tiers existe-t-elle ?</td><td class="audit-reponse"><label><input type="radio" name="audit_25" value="oui"> Oui</label> <label><input type="radio" name="audit_25" value="non"> Non</label></td><td class="audit-col-poids">4</td><td class="audit-score-cell"><span data-audit-score="25">0</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="processus-actions processus-actions--audit">
+            <button type="button" class="btn btn-primary" id="btnSaveAudit">💾 Enregistrer</button>
+            <button type="button" class="btn btn-primary" id="btnDownloadAudit">📥 Télécharger (HTML)</button>
+            <button type="button" class="btn btn-primary" id="btnDownloadAuditPdf">📄 Télécharger (PDF)</button>
+            <button type="button" class="btn btn-secondary" id="btnResetAudit">Réinitialiser le formulaire</button>
+            <button type="button" class="btn btn-secondary" id="btnResetAllAudit">Repartir de zéro (effacer tout)</button>
+          </div>
+          <p class="audit-download-hint" id="auditDownloadHint">Remplissez toutes les questions (Oui/Non) pour débloquer le téléchargement.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container container--wide">
+      <p>© Conitiv — Risk management tiers</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="audit.js"></script>
+</body>
+</html>

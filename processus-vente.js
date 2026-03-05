@@ -48,7 +48,7 @@
     if (prospectRdv) state.prospect.rdv = prospectRdv.value;
     const filterRisques = getSelectedFilterRisques();
     state.prospect.risque = filterRisques.length > 0 ? filterRisques[0] : '';
-    const prospectFields = ['direction', 'secteur', 'industrie', 'modele', 'presence', 'enjeux', 'structure', 'siege', 'fonctions', 'pilotage', 'reporting', 'outils'];
+    const prospectFields = ['direction', 'secteur', 'industrie', 'modele', 'presence'];
     prospectFields.forEach(f => {
       const el = document.getElementById('prospect' + f.charAt(0).toUpperCase() + f.slice(1));
       if (el) state.prospect[f] = el.value;
@@ -63,7 +63,13 @@
 
     document.querySelectorAll('.question-champ').forEach(el => {
       const key = el.dataset.q;
-      if (key) state.questions[key] = el.value;
+      if (!key) return;
+      if (el.classList.contains('question-champ--checkboxes')) {
+        const checked = Array.from(el.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
+        state.questions[key] = checked.join(', ');
+      } else {
+        state.questions[key] = el.value;
+      }
     });
 
     document.querySelectorAll('input[type="checkbox"]').forEach(el => {
@@ -90,7 +96,7 @@
   function applyFormState(state) {
     if (!state) return;
     if (state.prospect) {
-      const prospectMap = { nom: 'prospectNom', contact: 'prospectContact', date: 'prospectDate', rdv: 'prospectRdv', direction: 'prospectDirection', secteur: 'prospectSecteur', industrie: 'prospectIndustrie', modele: 'prospectModele', presence: 'prospectPresence', enjeux: 'prospectEnjeux', structure: 'prospectStructure', siege: 'prospectSiege', fonctions: 'prospectFonctions', pilotage: 'prospectPilotage', reporting: 'prospectReporting', outils: 'prospectOutils' };
+      const prospectMap = { nom: 'prospectNom', contact: 'prospectContact', date: 'prospectDate', rdv: 'prospectRdv', direction: 'prospectDirection', secteur: 'prospectSecteur', industrie: 'prospectIndustrie', modele: 'prospectModele', presence: 'prospectPresence' };
       Object.entries(prospectMap).forEach(([key, id]) => {
         const el = document.getElementById(id);
         if (el) el.value = state.prospect[key] || '';
@@ -108,7 +114,15 @@
     if (state.questions) {
       Object.entries(state.questions).forEach(([key, val]) => {
         const el = document.querySelector(`.question-champ[data-q="${key}"]`);
-        if (el) el.value = val || '';
+        if (!el) return;
+        if (el.classList.contains('question-champ--checkboxes')) {
+          const selected = (val || '').split(',').map(s => s.trim()).filter(Boolean);
+          el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.checked = selected.indexOf(cb.value) !== -1;
+          });
+        } else {
+          el.value = val || '';
+        }
       });
     }
     if (state.checkboxes) {
@@ -268,20 +282,55 @@
     });
   }
 
+  function getCheckboxQuestionCheckedValues(questionId) {
+    const el = document.querySelector('.question-champ--checkboxes[data-q="' + questionId + '"]');
+    if (!el) return [];
+    return Array.from(el.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+  }
+
   function updateQuestionVisibility() {
     const filterRisques = getSelectedFilterRisques();
     const filterDirections = getSelectedFilterDirections();
     const prospectDirection = document.getElementById('prospectDirection')?.value || '';
     const riskContext = filterRisques;
     const directionContext = filterDirections.length > 0 ? filterDirections : (prospectDirection ? [prospectDirection] : []);
-    document.querySelectorAll('.question-block[data-risque], .question-block[data-direction]').forEach(block => {
-      const blockRisque = block.dataset.risque || '';
-      const blockDirection = block.dataset.direction || '';
-      const matchRisque = !blockRisque ||
-        riskContext.includes(blockRisque) ||
-        (riskContext.includes('consolide') && ['cyber', 'esg', 'rgpd', 'defaillance'].includes(blockRisque));
-      const matchDirection = !blockDirection || directionContext.includes(blockDirection);
-      block.style.display = (matchRisque && matchDirection) ? '' : 'none';
+    document.querySelectorAll('.question-block').forEach(block => {
+      const showWhenQuestion = block.dataset.showWhenQuestion || '';
+      const showWhenOptions = (block.dataset.showWhenOptions || '').split('|').map(s => s.trim()).filter(Boolean);
+      const isDependent = showWhenQuestion && showWhenOptions.length > 0;
+
+      let matchRisque, matchDirection;
+      if (isDependent) {
+        const triggerChamp = document.querySelector('.question-block .question-champ[data-q="' + showWhenQuestion + '"]');
+        const triggerBlock = triggerChamp ? triggerChamp.closest('.question-block') : null;
+        if (triggerBlock) {
+          const tRisque = triggerBlock.dataset.risque || '';
+          const tDir = triggerBlock.dataset.direction || '';
+          const tDirs = (triggerBlock.dataset.directions || '').split(',').map(s => s.trim()).filter(Boolean);
+          matchRisque = !tRisque || riskContext.includes(tRisque) || (riskContext.includes('consolide') && ['cyber', 'esg', 'rgpd', 'defaillance'].includes(tRisque));
+          matchDirection = tDirs.length > 0
+            ? (directionContext.length === 0 || directionContext.some(d => tDirs.includes(d)))
+            : (!tDir || directionContext.length === 0 || directionContext.includes(tDir));
+        } else {
+          matchRisque = true;
+          matchDirection = true;
+        }
+      } else {
+        const blockRisque = block.dataset.risque || '';
+        const blockDirection = block.dataset.direction || '';
+        const blockDirections = (block.dataset.directions || '').split(',').map(s => s.trim()).filter(Boolean);
+        matchRisque = !blockRisque || riskContext.includes(blockRisque) || (riskContext.includes('consolide') && ['cyber', 'esg', 'rgpd', 'defaillance'].includes(blockRisque));
+        matchDirection = blockDirections.length > 0
+          ? (directionContext.length === 0 || directionContext.some(d => blockDirections.includes(d)))
+          : (!blockDirection || directionContext.length === 0 || directionContext.includes(blockDirection));
+      }
+
+      let matchShowWhen = true;
+      if (showWhenQuestion && showWhenOptions.length > 0) {
+        const checked = getCheckboxQuestionCheckedValues(showWhenQuestion);
+        matchShowWhen = showWhenOptions.some(opt => checked.indexOf(opt) !== -1);
+      }
+      block.style.display = (matchRisque && matchDirection && matchShowWhen) ? '' : 'none';
     });
   }
 
@@ -537,18 +586,6 @@
       <tr><th>Industrie / métier</th><td>${escapeHtml(state.prospect?.industrie || '—')}</td></tr>
       <tr><th>Modèle</th><td>${escapeHtml(getSelectLabel('prospectModele') || state.prospect?.modele || '—')}</td></tr>
       <tr><th>Présence</th><td>${escapeHtml(state.prospect?.presence || '—')}</td></tr>
-      <tr><th>Enjeux réglementaires</th><td>${escapeHtml(state.prospect?.enjeux || '—')}</td></tr>
-    </table>
-  </div>
-
-  <div class="section">
-    <h2>Organisation</h2>
-    <table>
-      <tr><th>Structure</th><td>${escapeHtml(getSelectLabel('prospectStructure') || state.prospect?.structure || '—')}</td></tr>
-      <tr><th>Siège / périmètre</th><td>${escapeHtml(state.prospect?.siege || '—')}</td></tr>
-      <tr><th>Fonctions impliquées</th><td>${escapeHtml(state.prospect?.fonctions || '—')}</td></tr>
-      <tr><th>Pilotage risque tiers</th><td>${escapeHtml(state.prospect?.pilotage || '—')}</td></tr>
-      <tr><th>Outils actuels</th><td>${escapeHtml(state.prospect?.outils || '—')}</td></tr>
     </table>
   </div>
 
@@ -625,6 +662,9 @@
       updateQuestionVisibility();
     });
     document.getElementById('prospectDirection')?.addEventListener('change', updateQuestionVisibility);
+    document.body.addEventListener('change', function (e) {
+      if (e.target && e.target.type === 'checkbox' && e.target.closest('.question-champ--checkboxes')) updateQuestionVisibility();
+    });
     document.getElementById('btnNewClient')?.addEventListener('click', newClient);
     document.getElementById('btnDeleteClient')?.addEventListener('click', deleteClient);
     document.getElementById('btnSave')?.addEventListener('click', () => save(false));

@@ -47,6 +47,14 @@
     return formatThousands(Math.round(euros), 0) + ' €';
   }
 
+  function formatKSmart(kEuros) {
+    const k = Number(kEuros);
+    if (!isFinite(k) || k < 0) return '—';
+    const euros = k * 1000;
+    if (euros >= 10e6) return formatThousands(euros / 1e6, 1) + ' M€';
+    return formatThousands(k, k % 1 ? 1 : 0) + ' k€';
+  }
+
   // Parse risk string (e.g. "18–72 k€" or "28 k€") to euros
   function parseRiskToEuros(str) {
     if (!str || typeof str !== 'string') return null;
@@ -163,9 +171,9 @@
 
     if (hasImpacts) {
       const totalK = directK + indirectK;
-      document.getElementById('impactDirect').textContent = directK + ' k€';
-      document.getElementById('impactIndirect').textContent = indirectK + ' k€';
-      document.getElementById('impactTotal').textContent = totalK + ' k€';
+      document.getElementById('impactDirect').textContent = formatKSmart(directK);
+      document.getElementById('impactIndirect').textContent = formatKSmart(indirectK);
+      document.getElementById('impactTotal').textContent = formatKSmart(totalK);
       const impactTotalEuros = totalK * 1000;
       lastImpactTotalEuros = impactTotalEuros;
       if (hasProbas) {
@@ -363,13 +371,11 @@
       if (nis2CaEl && !isNaN(caM)) nis2CaEl.value = formatThousands(caM, caM % 1 ? 1 : 0);
     }
     const NIS2_FACTEURS = [
-      { id: 'nis2FacteurIncident', poids: 0.20 },
-      { id: 'nis2FacteurNotification', poids: 0.20 },
-      { id: 'nis2FacteurSecteur', poids: 0.08 },
-      { id: 'nis2FacteurTiers', poids: 0.08 },
-      { id: 'nis2FacteurSignalement', poids: 0.08 },
-      { id: 'nis2FacteurAudit', poids: 0.04 },
-      { id: 'nis2FacteurTaille', poids: 0.04 }
+      { id: 'nis2FacteurIncidentPublic', poids: 0.20 },
+      { id: 'nis2FacteurTiersCritiques', poids: 0.10 },
+      { id: 'nis2FacteurMaturiteFaible', poids: 0.15 },
+      { id: 'nis2FacteurSecteurRegule', poids: 0.08 },
+      { id: 'nis2FacteurHistoriqueConformite', poids: 0.07 }
     ];
     const baseProba = 0.005;
     let probaSum = baseProba;

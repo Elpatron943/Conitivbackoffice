@@ -1,5 +1,5 @@
 /**
- * Conitiv — Génération PDF synthèse orientée board (arguments de conviction)
+ * Conitiv — Génération PDF de synthèse (commerciale & neutre)
  */
 (function () {
   const COLORS = {
@@ -54,7 +54,7 @@
     doc.setFontSize(11);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...COLORS.accent);
-    doc.text('Message clé pour le board', margin, y);
+    doc.text('Message clé', margin, y);
     doc.setFont(undefined, 'normal');
     doc.setFontSize(10);
     doc.setTextColor(...COLORS.text);
@@ -69,7 +69,7 @@
       doc.setFont(undefined, 'bold');
       doc.setFontSize(10);
       doc.setTextColor(0, 100, 0);
-      doc.text('Recommandation : investissement justifié — ROI ' + roiDisplay + '. ' + (economie || 'L\'exposition évitée dépasse le coût de la solution.'), margin + 6, y + 4, { maxWidth: contentW - 12 });
+      doc.text('Lecture : ROI ' + roiDisplay + '. ' + (economie || 'L\'exposition évitée dépasse le coût de la solution.'), margin + 6, y + 4, { maxWidth: contentW - 12 });
       doc.setFont(undefined, 'normal');
       doc.setTextColor(...COLORS.text);
       y += 28;
@@ -111,7 +111,7 @@
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...COLORS.accent);
-    doc.text('Arguments pour convaincre le board', margin + 8, y + 3);
+    doc.text('Points clés', margin + 8, y + 3);
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...COLORS.text);
@@ -247,7 +247,7 @@
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...COLORS.accent);
-    doc.text('Opportunités par direction — arguments de conviction', margin + 8, y + 3);
+    doc.text('Opportunités par direction', margin + 8, y + 3);
     doc.setFont(undefined, 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...COLORS.text);
@@ -256,7 +256,7 @@
 
     const shortDesc = {
       'Dirigeants': 'Protection exposition personnelle. Gouvernance traçable = défense du management.',
-      'CISO / DSI': 'Crédibilité professionnelle. Pilote actif du risque cyber face au board.',
+      'CISO / DSI': 'Crédibilité professionnelle. Pilotage actif du risque cyber.',
       'Risk / Compliance': 'Traçabilité fournisseurs, conformité documentée. Leadership sur la gouvernance.',
       'Achats': 'Continuité d\'approvisionnement. Maîtrise du risque supply chain.',
       'Finance': 'Pilotage des risques fournisseurs. Réduction exposition défaillances.'
@@ -306,7 +306,7 @@
     doc.setFontSize(18);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(255, 255, 255);
-    doc.text('Synthèse pour le board — Risque tiers', margin, 16);
+    doc.text('Synthèse exécutive — Risque tiers', margin, 16);
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     doc.text(clientName + ' · ' + sector + ' · ' + size, margin, 24);
@@ -381,7 +381,7 @@
     doc.text('Les ratios de réduction sont des ordres de grandeur. Une solution de scoring ne supprime pas le risque fournisseur.', margin, y, { maxWidth: pageW - margin * 2 });
     doc.text('Sources : ANSSI, Cour des comptes, CriseHelp, Bessé/G.P. Goldstein, Verizon DBIR, ENISA, Marsh, NIS2, CNIL.', margin, y + 6);
 
-    const filename = 'Conitiv-synthese-board-' + (activeTab || 'risque') + '-' + (clientName || 'client').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') + '.pdf';
+    const filename = 'Conitiv-synthese-executive-' + (activeTab || 'risque') + '-' + (clientName || 'client').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') + '.pdf';
     doc.save(filename);
   }
 

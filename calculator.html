@@ -20,6 +20,7 @@
         <a href="index.html#solution">Solution</a>
         <a href="crm.html">CRM</a>
         <a href="processus-vente.html">Processus vente</a>
+        <a href="audit.html">Audit</a>
       </nav>
     </div>
   </header>
@@ -206,46 +207,34 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td>Incident cyber déclaré ou médiatisé</td>
+                        <td>Incident cyber public (déclaré, médiatisé, communiqué)</td>
                         <td><span class="impact-badge impact-tres-fort">Très fort</span></td>
                         <td>+20 %</td>
-                        <td><input type="checkbox" id="nis2FacteurIncident" class="nis2-facteur-cb"></td>
-                      </tr>
-                      <tr>
-                        <td>Notification NIS2 tardive ou incomplète</td>
-                        <td><span class="impact-badge impact-tres-fort">Très fort</span></td>
-                        <td>+20 %</td>
-                        <td><input type="checkbox" id="nis2FacteurNotification" class="nis2-facteur-cb"></td>
-                      </tr>
-                      <tr>
-                        <td>Secteur critique (énergie, santé, finance, transport, numérique)</td>
-                        <td><span class="impact-badge impact-fort">Fort</span></td>
-                        <td>+8 %</td>
-                        <td><input type="checkbox" id="nis2FacteurSecteur" class="nis2-facteur-cb"></td>
+                        <td><input type="checkbox" id="nis2FacteurIncidentPublic" class="nis2-facteur-cb"></td>
                       </tr>
                       <tr>
                         <td>Dépendance à des tiers critiques</td>
                         <td><span class="impact-badge impact-fort">Fort</span></td>
-                        <td>+8 %</td>
-                        <td><input type="checkbox" id="nis2FacteurTiers" class="nis2-facteur-cb"></td>
+                        <td>+10 %</td>
+                        <td><input type="checkbox" id="nis2FacteurTiersCritiques" class="nis2-facteur-cb"></td>
                       </tr>
                       <tr>
-                        <td>Signalement client / fournisseur / assureur</td>
+                        <td>Maturité gouvernance sécurité faible (preuves insuffisantes : PSSI/TPRM/PCA-PRA, suivi fournisseurs)</td>
+                        <td><span class="impact-badge impact-tres-fort">Très fort</span></td>
+                        <td>+15 %</td>
+                        <td><input type="checkbox" id="nis2FacteurMaturiteFaible" class="nis2-facteur-cb"></td>
+                      </tr>
+                      <tr>
+                        <td>Secteur régulé / critique (NIS2, DORA, santé, énergie, transport, numérique…)</td>
                         <td><span class="impact-badge impact-fort">Fort</span></td>
                         <td>+8 %</td>
-                        <td><input type="checkbox" id="nis2FacteurSignalement" class="nis2-facteur-cb"></td>
+                        <td><input type="checkbox" id="nis2FacteurSecteurRegule" class="nis2-facteur-cb"></td>
                       </tr>
                       <tr>
-                        <td>Audit antérieur négatif</td>
+                        <td>Historique conformité défavorable (audit négatif, notification tardive/incomplète, incidents récurrents)</td>
                         <td><span class="impact-badge impact-moyen">Moyen</span></td>
-                        <td>+4 %</td>
-                        <td><input type="checkbox" id="nis2FacteurAudit" class="nis2-facteur-cb"></td>
-                      </tr>
-                      <tr>
-                        <td>Taille ETI / grande entreprise</td>
-                        <td><span class="impact-badge impact-moyen">Moyen</span></td>
-                        <td>+4 %</td>
-                        <td><input type="checkbox" id="nis2FacteurTaille" class="nis2-facteur-cb"></td>
+                        <td>+7 %</td>
+                        <td><input type="checkbox" id="nis2FacteurHistoriqueConformite" class="nis2-facteur-cb"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -283,22 +272,6 @@
                 </div>
               </div>
               <p class="nis2-note">Un prestataire (cloud, infogérant, éditeur SaaS, cybersécurité) peut être qualifié d'entité importante même hors secteur critique s'il fournit des services essentiels à des acteurs NIS2.</p>
-              <h3>Probabilité d'être contrôlé et amendé (ordre de grandeur)</h3>
-              <p class="nis2-intro">Il n'existe pas de taux officiel. Les pourcentages ci-dessous estiment la probabilité d'être contrôlé et de recevoir une amende (pas une pondération du montant). Ordres de grandeur utilisés par cabinets de conseil et assureurs cyber.</p>
-              <table class="hypotheses-table nis2-table">
-                <thead>
-                  <tr>
-                    <th>Situation</th>
-                    <th>Probabilité d'être contrôlé et amendé (annuelle)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>Entreprise NIS2 sans incident</td><td>&lt; 1 %</td></tr>
-                  <tr><td>Entreprise NIS2 avec incident significatif (ransomware, fuite, indisponibilité)</td><td>20–40 %</td></tr>
-                  <tr><td>Incident + non-conformité documentée (pas de PSSI, TPRM, PCA/PRA)</td><td>50–70 %</td></tr>
-                </tbody>
-              </table>
-              <p class="nis2-note">Le déclencheur n'est pas « être non conforme » mais un incident + mauvaise gouvernance ou notification hors délai. Les autorités vérifient : risques identifiés, fournisseurs critiques évalués, preuves écrites, management impliqué.</p>
               <h3>Responsabilité des dirigeants</h3>
               <p>NIS2 introduit une responsabilité directe du management : validation et supervision des mesures cyber, possibilité de suspension temporaire d'un dirigeant, responsabilité en cas de négligence grave.</p>
               <h3>Probabilité selon secteur et taille</h3>
@@ -420,7 +393,7 @@
               <div class="opportunite-card">
                 <span class="opportunite-badge">Carrière & posture cyber</span>
                 <h4>CISO / DSI</h4>
-                <p>Renforcer votre crédibilité professionnelle et éviter la pression du board en cas d'incident fournisseur non anticipé. Une gouvernance démontrable vous positionne comme pilote actif du risque cyber.</p>
+                <p>Renforcer votre crédibilité professionnelle et limiter l'exposition interne en cas d'incident fournisseur non anticipé. Une gouvernance démontrable vous positionne comme pilote actif du risque cyber.</p>
               </div>
               <div class="opportunite-card">
                 <span class="opportunite-badge">GRC & crédibilité</span>
@@ -435,7 +408,7 @@
               <div class="opportunite-card">
                 <span class="opportunite-badge">Exposition & pilotage</span>
                 <h4>Finance</h4>
-                <p>Réduire l'exposition financière liée aux fournisseurs critiques. Piloter le risque de contrepartie, sécuriser les engagements et démontrer une gouvernance financière défendable auprès du board et des assureurs.</p>
+                <p>Réduire l'exposition financière liée aux fournisseurs critiques. Piloter le risque de contrepartie, sécuriser les engagements et démontrer une gouvernance financière défendable auprès des parties prenantes et des assureurs.</p>
               </div>
             </div>
             <blockquote class="quote quote--opportunite">
