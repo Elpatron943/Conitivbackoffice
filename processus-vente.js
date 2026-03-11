@@ -54,9 +54,8 @@
       if (el) state.prospect[f] = el.value;
     });
 
-    ['notesRdv1', 'notesRdv2', 'notesRdv3', 'notesRdv4', 'notesRdv5'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) state.notes[id] = el.value;
+    document.querySelectorAll('[id^="notesRdv"]').forEach(el => {
+      if (el.id) state.notes[el.id] = el.value;
     });
     const actionsCommunes = document.getElementById('actionsCommunes');
     if (actionsCommunes) state.actionsCommunes = actionsCommunes.value;
@@ -85,9 +84,8 @@
       if (el && el.value !== '') state.metriques[id] = el.value;
     });
 
-    ['dateNext1', 'dateNext2', 'dateNext3', 'dateNext4', 'dateNext5'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el && el.value) state.datesNext[id] = el.value;
+    document.querySelectorAll('[id^="dateNext"]').forEach(el => {
+      if (el.id && el.value) state.datesNext[el.id] = el.value;
     });
 
     return state;
@@ -593,38 +591,51 @@
 
   <div class="section">
     <h2>Synthèse des échanges</h2>
-    ${['notesRdv1','notesRdv2','notesRdv3','notesRdv4','notesRdv5'].map((id, i) => {
-      const v = state.notes?.[id];
-      if (!v || !v.trim()) return '';
-      const t = ['Exploration', 'Déconstruction', 'Pouvoir & budget', 'Justification exécutive', 'Closing'][i];
-      return `<p><strong>RDV ${i + 1} — ${t}</strong></p><div class="notes">${escapeHtml(v)}</div>`;
-    }).filter(Boolean).join('') || '<p>—</p>'}
+    ${(function () {
+      const noteIds = Object.keys(state.notes || {}).filter(id => /^notesRdv\d+$/.test(id));
+      noteIds.sort((a, b) => parseInt(a.replace('notesRdv', ''), 10) - parseInt(b.replace('notesRdv', ''), 10));
+      return noteIds.map(id => {
+        const v = state.notes[id];
+        if (!v || !v.trim()) return '';
+        const n = id.replace('notesRdv', '');
+        const titleEl = document.getElementById('rdv' + n);
+        const t = titleEl?.querySelector('.rdv-header h2')?.textContent?.trim() || ('RDV ' + n);
+        return `<p><strong>RDV ${n} — ${escapeHtml(t)}</strong></p><div class="notes">${escapeHtml(v)}</div>`;
+      }).filter(Boolean).join('') || '<p>—</p>';
+    })()}
   </div>
 
   <div class="section">
     <h2>Actions mutuelles par RDV</h2>
-    ${[1,2,3,4,5].map(rdv => {
-      const vendeurChecked = Object.entries(state.checkboxes || {}).filter(([k,v]) => k.startsWith('vendeur' + rdv) && v).map(([k]) => k);
-      const clientChecked = Object.entries(state.checkboxes || {}).filter(([k,v]) => k.startsWith('client' + rdv) && v).map(([k]) => k);
-      const dateNext = state.datesNext?.['dateNext' + rdv];
-      if (vendeurChecked.length === 0 && clientChecked.length === 0 && !dateNext) return '';
-      const labels = { vendeur1a:'Envoyer compte-rendu', vendeur1b:'Envoyer documentation / présentation', vendeur1c:'Impliquer un autre interlocuteur',
-        vendeur2a:'Organiser démo / POC', vendeur2b:'Envoyer étude de cas / référence',
-        vendeur3a:'Organiser rencontre avec décideur', vendeur3b:'Préparer business case / ROI', vendeur3c:'Rassurer les parties prenantes',
-        vendeur4a:'Envoyer proposition commerciale', vendeur4b:'Répondre aux objections',
-        vendeur5a:'Planifier kick-off projet',
-        client1a:'Fournir liste fournisseurs / périmètre',
-        client2a:'Valider critères de décision', client2b:'Fournir données pour chiffrage',
-        client3a:'Valider budget / process achats',
-        client4a:'Passer par achats / juridique', client4b:'Valider périmètre final',
-        client5a:'Signer le contrat', client5b:'Finaliser conditions' };
-      const vItems = vendeurChecked.map(id => labels[id] || id);
-      const cItems = clientChecked.map(id => labels[id] || id);
-      const parts = [];
-      if (vItems.length) parts.push('Vendeur: ' + vItems.join(' • '));
-      if (cItems.length) parts.push('Client: ' + cItems.join(' • '));
-      return `<p><strong>RDV ${rdv}</strong>${parts.length ? ': ' + parts.join(' — ') : ''}${dateNext ? ' — Prochaine étape: ' + dateNext : ''}</p>`;
-    }).filter(Boolean).join('') || '<p>—</p>'}
+    ${(function () {
+      const rdvSet = new Set();
+      Object.keys(state.checkboxes || {}).forEach(k => {
+        const m = k.match(/^(vendeur|client)(\d+)/);
+        if (m && state.checkboxes[k]) rdvSet.add(parseInt(m[2], 10));
+      });
+      Object.keys(state.datesNext || {}).forEach(k => {
+        const m = k.match(/^dateNext(\d+)$/);
+        if (m && state.datesNext[k]) rdvSet.add(parseInt(m[1], 10));
+      });
+      const rdvs = Array.from(rdvSet).sort((a, b) => a - b);
+      function getCheckboxLabel(checkboxId) {
+        const el = document.getElementById(checkboxId);
+        const label = el?.closest('label')?.textContent?.trim();
+        return (label || checkboxId).replace(/\s+/g, ' ').trim();
+      }
+      return rdvs.map(rdv => {
+        const vendeurChecked = Object.entries(state.checkboxes || {}).filter(([k, v]) => k.startsWith('vendeur' + rdv) && v).map(([k]) => k);
+        const clientChecked = Object.entries(state.checkboxes || {}).filter(([k, v]) => k.startsWith('client' + rdv) && v).map(([k]) => k);
+        const dateNext = state.datesNext?.['dateNext' + rdv];
+        if (vendeurChecked.length === 0 && clientChecked.length === 0 && !dateNext) return '';
+        const vItems = vendeurChecked.map(getCheckboxLabel);
+        const cItems = clientChecked.map(getCheckboxLabel);
+        const parts = [];
+        if (vItems.length) parts.push('Vendeur: ' + vItems.join(' • '));
+        if (cItems.length) parts.push('Client: ' + cItems.join(' • '));
+        return `<p><strong>RDV ${rdv}</strong>${parts.length ? ': ' + parts.join(' — ') : ''}${dateNext ? ' — Prochaine étape: ' + dateNext : ''}</p>`;
+      }).filter(Boolean).join('') || '<p>—</p>';
+    })()}
   </div>
 
   <div class="section">

@@ -1,0 +1,11 @@
+{
+  "name": "conitiv-roi",
+  "private": true,
+  "scripts": {
+    "dev": "http-server -p 5173 -o",
+    "start": "http-server -p 5173 -o"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

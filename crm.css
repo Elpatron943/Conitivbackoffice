@@ -170,6 +170,68 @@
   margin: 0 0 1rem;
 }
 
+.crm-modal-content--wide {
+  max-width: 720px;
+}
+
+.crm-import-hint {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+  line-height: 1.45;
+}
+
+.crm-import-zone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.crm-import-zone--over {
+  border-color: var(--color-accent);
+  background: rgba(13, 71, 161, 0.04);
+}
+
+.crm-import-zone p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.crm-import-preview h3 {
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.crm-import-table-wrap {
+  max-height: 280px;
+  overflow: auto;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.crm-import-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.crm-import-table th,
+.crm-import-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.crm-import-table th {
+  font-weight: 600;
+  background: var(--color-bg);
+}
+
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));

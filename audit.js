@@ -351,40 +351,60 @@
   <title>Rapport d'audit risque tiers — ${escapeHtml(nomEntreprise)} | Conitiv</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>
   <style>
-    body { font-family: 'Segoe UI', system-ui, sans-serif; max-width: 900px; margin: 0 auto; padding: 2rem; color: #1a1a1a; line-height: 1.5; }
-    h1 { font-size: 1.4rem; margin: 0 0 0.5rem; color: #0d47a1; }
-    h2 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: #333; }
-    .meta { color: #666; font-size: 0.95rem; margin-bottom: 1rem; }
-    .radar-wrap { max-width: 480px; margin: 1.5rem auto; }
-    table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.9rem; }
-    th, td { padding: 0.45rem 0.6rem; text-align: left; border: 1px solid #ddd; }
-    th { font-weight: 600; background: #f5f5f5; }
-    .score-total { margin-top: 1rem; font-size: 1.1rem; font-weight: 600; }
-    .footer { margin-top: 2rem; font-size: 0.8rem; color: #888; }
-    @media print { body { padding: 1rem; } .radar-wrap { break-inside: avoid; } }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 6px; color: #1a1a1a; line-height: 1.25; width: 210mm; min-height: 297mm; max-height: 297mm; overflow: hidden; }
+    .one-page { display: flex; flex-direction: column; height: 285mm; }
+    .report-header { flex-shrink: 0; margin-bottom: 4px; padding-bottom: 4px; border-bottom: 1px solid #ddd; }
+    h1 { font-size: 11px; margin: 0 0 2px; color: #0d47a1; }
+    .meta { color: #444; font-size: 8px; margin: 0; }
+    .meta-line { display: flex; flex-wrap: wrap; gap: 0 12px; }
+    .report-body { display: flex; gap: 8px; flex: 1; min-height: 0; }
+    .col-radar { flex: 0 0 42%; display: flex; flex-direction: column; }
+    .col-radar h2 { font-size: 9px; margin: 0 0 2px; }
+    .radar-wrap { flex: 1; min-height: 0; position: relative; }
+    .radar-wrap canvas { max-width: 100%; max-height: 100%; width: auto !important; height: auto !important; }
+    .col-table { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .col-table h2 { font-size: 9px; margin: 0 0 2px; }
+    .table-wrap { flex: 1; overflow: hidden; font-size: 6px; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th, td { padding: 2px 3px; text-align: left; border: 1px solid #ddd; }
+    th { font-weight: 600; background: #f0f0f0; }
+    .score-total { flex-shrink: 0; font-size: 9px; font-weight: 600; margin: 4px 0 0; padding-top: 4px; border-top: 1px solid #ddd; }
+    .footer { flex-shrink: 0; font-size: 6px; color: #888; margin-top: 2px; }
+    @media print { body { padding: 0; } }
   </style>
 </head>
 <body>
-  <h1>Rapport d'audit — Risque tiers (cyber / TPRM)</h1>
-  <p class="meta"><strong>Nom entreprise :</strong> ${escapeHtml(nomEntreprise)}</p>
-  <p class="meta"><strong>Audité :</strong> ${escapeHtml(auditeLabel)}</p>
-  ${tailleLabel ? `<p class="meta"><strong>Taille :</strong> ${escapeHtml(tailleLabel)}</p>` : ''}
-  ${secteurLabel ? `<p class="meta"><strong>Secteur :</strong> ${escapeHtml(secteurLabel)}</p>` : ''}
-
-  <h2>Score par pilier (radar)</h2>
-  <p class="meta">Votre audit comparé à la moyenne des audits de même profil (taille + secteur).</p>
-  <div class="radar-wrap">
-    <canvas id="auditRadarChart" width="400" height="400"></canvas>
+  <div class="one-page">
+    <div class="report-header">
+      <h1>Rapport d'audit — Risque tiers (cyber / TPRM)</h1>
+      <div class="meta meta-line">
+        <span><strong>Entreprise :</strong> ${escapeHtml(nomEntreprise)}</span>
+        <span><strong>Audité :</strong> ${escapeHtml(auditeLabel)}</span>
+        ${tailleLabel ? `<span><strong>Taille :</strong> ${escapeHtml(tailleLabel)}</span>` : ''}
+        ${secteurLabel ? `<span><strong>Secteur :</strong> ${escapeHtml(secteurLabel)}</span>` : ''}
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="col-radar">
+        <h2>Score par pilier (radar)</h2>
+        <div class="radar-wrap">
+          <canvas id="auditRadarChart" width="280" height="280"></canvas>
+        </div>
+      </div>
+      <div class="col-table">
+        <h2>Détail des réponses</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Pilier</th><th>N°</th><th>Question</th><th>Rép.</th><th>Pt</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <p class="score-total">Score total : ${scoreTotal} / ${AUDIT_SCORE_MAX}</p>
+      </div>
+    </div>
+    <p class="footer">Document généré par Conitiv — Risk management tiers</p>
   </div>
-
-  <h2>Détail des réponses</h2>
-  <table>
-    <thead><tr><th>Pilier</th><th>ID</th><th>Question</th><th>Réponse</th><th>Score</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table>
-  <p class="score-total">Score total : ${scoreTotal} / ${AUDIT_SCORE_MAX}</p>
-
-  <p class="footer">Document généré par Conitiv — Risk management tiers</p>
 
   <script>
     (function() {
@@ -446,7 +466,7 @@
     const html = buildReportHtml(true);
     const filename = `Conitiv-Audit-${slugify((collectAuditState().audit?.nomEntreprise || '').trim() || 'Entreprise')}.pdf`;
     const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:absolute;width:900px;height:1200px;left:-9999px;top:0;';
+    iframe.style.cssText = 'position:absolute;width:794px;height:1123px;left:-9999px;top:0;';
     document.body.appendChild(iframe);
     const doc = iframe.contentDocument;
     doc.open();
@@ -457,11 +477,12 @@
         const el = iframe.contentDocument.body;
         if (!el) { document.body.removeChild(iframe); showToast('Erreur PDF.'); return; }
         html2pdf().set({
-          margin: 10,
+          margin: 5,
           filename: filename,
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 2 },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+          pagebreak: { mode: 'avoid-all', avoid: ['tr', 'table'] }
         }).from(el).save().then(() => {
           document.body.removeChild(iframe);
           saveForm();

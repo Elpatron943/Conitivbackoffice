@@ -166,6 +166,74 @@
     return `<div class="axe${adaptClass}" data-rdv="${escapeAttr(axis.rdv)}" data-axe="${escapeAttr(axis.axe)}"><h4>${title}</h4><div${listAttrs}>${questionsHtml}</div></div>`;
   }
 
+  /** Assure que le DOM a exactement N sections RDV (N = config.rdvs.length). Cache les sections en trop, clone rdv3 pour en créer si N > 5. */
+  function ensureRdvSections(config) {
+    if (!config || !Array.isArray(config.rdvs)) return;
+    const N = config.rdvs.length;
+    const container = document.getElementById('rdv5')?.parentNode;
+    if (!container) return;
+
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('rdv' + i);
+      if (el) el.style.display = N >= i ? '' : 'none';
+    }
+
+    if (N <= 5) {
+      for (let i = 6; i <= 20; i++) {
+        const el = document.getElementById('rdv' + i);
+        if (el) el.remove();
+      }
+      updateProspectRdvSelect(config);
+      return;
+    }
+
+    const template = document.getElementById('rdv3');
+    if (!template) return;
+    for (let i = 6; i <= N; i++) {
+      if (document.getElementById('rdv' + i)) continue;
+      const clone = template.cloneNode(true);
+      clone.id = 'rdv' + i;
+      clone.classList.remove('rdv-section--3');
+      clone.classList.add('rdv-section--' + i);
+      const badge = clone.querySelector('.rdv-badge--3');
+      if (badge) {
+        badge.classList.remove('rdv-badge--3');
+        badge.classList.add('rdv-badge--' + i);
+        badge.textContent = 'RDV ' + i;
+      }
+      const replaceMap = {
+        notesRdv3: 'notesRdv' + i,
+        sortie3a: 'sortie' + i + 'a', sortie3b: 'sortie' + i + 'b', sortie3c: 'sortie' + i + 'c',
+        vendeur3a: 'vendeur' + i + 'a', vendeur3b: 'vendeur' + i + 'b', vendeur3c: 'vendeur' + i + 'c',
+        client3a: 'client' + i + 'a', dateNext3: 'dateNext' + i
+      };
+      clone.querySelectorAll('[id]').forEach(el => {
+        if (el.id && replaceMap[el.id]) el.id = replaceMap[el.id];
+      });
+      clone.querySelectorAll('[for]').forEach(el => {
+        const f = el.getAttribute('for');
+        if (f && replaceMap[f]) el.setAttribute('for', replaceMap[f]);
+      });
+      clone.querySelectorAll('input[name="lecture3"]').forEach(el => { el.name = 'lecture' + i; });
+      const sortieH4 = clone.querySelector('.rdv-sortie h4');
+      if (sortieH4) sortieH4.textContent = '✅ Sortie RDV ' + i;
+      clone.querySelector('.rdv-axes').innerHTML = '';
+      const after = document.getElementById('rdv' + (i - 1));
+      container.insertBefore(clone, after ? after.nextSibling : null);
+    }
+    updateProspectRdvSelect(config);
+  }
+
+  function updateProspectRdvSelect(config) {
+    const sel = document.getElementById('prospectRdv');
+    if (!sel || !config?.rdvs?.length) return;
+    sel.innerHTML = config.rdvs.map((r) => {
+      const v = escapeAttr(r.rdv);
+      const label = escapeAttr('RDV ' + r.rdv + (r.title ? ' — ' + r.title : ''));
+      return `<option value="${v}">${label}</option>`;
+    }).join('');
+  }
+
   /** Applique la config : remplit chaque RDV (axes + questions) à partir de la config. */
   function applyQuestionsConfig(config) {
     if (!config || !config.axes) return;
@@ -187,10 +255,13 @@
     });
   }
 
-  /** Au chargement : si une config existe, l'appliquer. */
+  /** Au chargement : si une config existe, adapter les sections RDV puis appliquer titres + axes. */
   function init() {
     const config = getConfig();
-    if (config) applyQuestionsConfig(config);
+    if (config) {
+      ensureRdvSections(config);
+      applyQuestionsConfig(config);
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -203,7 +274,9 @@
     getConfig,
     setConfig,
     buildQuestionsConfigFromDOM,
+    ensureRdvSections,
     applyQuestionsConfig,
+    updateProspectRdvSelect,
     CONFIG_KEY
   };
 })();

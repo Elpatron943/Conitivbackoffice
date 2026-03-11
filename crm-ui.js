@@ -922,4 +922,6 @@
   });
 
   renderAll();
+
+  window.addEventListener('crm-import-done', () => renderAll());
 })();
